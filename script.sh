@@ -26,8 +26,8 @@ craeteApi (){
     displayName=$(echo "$jsonFile" | jq -r '.info.title')
     az apim api create --service-name "${APIM_INSTANCE}" -g "${RESOURCE_GROUP}" --api-id "${apiVersionSetId}" --path "/${apiVersionSetId}" --display-name "${displayName}"
     serviceUrl=$(echo "$jsonFile" | jq -r '.servers[0].url')
-    basePath=$(echo "$serviceUrl" | jq -r '. | @uri')
-    az apim api import --service-name "${APIM_INSTANCE}" -g "${RESOURCE_GROUP}"  --api-version-set-id "${apiVersionSetId}" --api-version "${apiVersionId}" --api-revision "${apiRevisionId}" --specification-format "${specificationFormat}" --specification-path "${apiFilePath}" --path "${basePath}"
+    basePath="${serviceUrl}"
+    az apim api import --service-name "${APIM_INSTANCE}" -g "${RESOURCE_GROUP}"  --specification-format OpenApiJson --specification-path "${apiFilePath}" --path "${basePath}"
 
 }
 
