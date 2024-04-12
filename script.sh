@@ -3,14 +3,11 @@
 FIRST_COMMIT_HASH='c940dd84621df36524518f6ebea4d8646f7bc160'
 RESOURCE_GROUP='dlr-dev-apim'
 APIM_INSTANCE='dlr-dev-apim'
-
 BUILD_SOURCESDIRECTORY=$(pwd)
-
 sourceFolder="$BUILD_SOURCESDIRECTORY/APIs"
 
 
 current_hash=$(git log --oneline -1 --pretty=format:%H)
-
 gitchanges=$(git diff --name-status "$FIRST_COMMIT_HASH" "$current_hash")
 
 
@@ -23,9 +20,15 @@ craeteApi (){
 	jsonFile=$(cat "$apiFilePath" | jq -c '.')
 	apiVersionSetId=$(echo "$jsonFile" | jq -r '.info.title' | tr -d '[:space:]' | tr -cd '[:alnum:]_' | sed 's/[^0-9a-zA-Z_]/-/g')
     apiVersironNumber=$(echo "$jsonFile" | jq -r '.info.version' | cut -d'.' -f1)
+    apiRevisionId=$(echo "$jsonFile" | jq -r '.info.version' | cut -d'.' -f2)
     apiVersionId="Version $apiVersironNumber"
+    specificationFormat="OpenApi"
     displayName=$(echo "$jsonFile" | jq -r '.info.title')
     az apim api create --service-name "${APIM_INSTANCE}" -g "${RESOURCE_GROUP}" --api-id "${apiVersionSetId}" --path "/${apiVersionSetId}" --display-name "${displayName}"
+    serviceUrl=$(echo "$jsonFile" | jq -r '.servers[0].url')
+    basePath=$(echo "$serviceUrl" | jq -r '. | @uri')
+    az apim api import --service-name "${APIM_INSTANCE}" -g "${RESOURCE_GROUP}"  --api-version-set-id "${apiVersionSetId}" --api-version "${apiVersionId}" --api-revision "${apiRevisionId}" --specification-format "${specificationFormat}" --specification-path "${apiFilePath}" --path "${basePath}"
+
 }
 
 
