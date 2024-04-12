@@ -24,7 +24,8 @@ craeteApi (){
 	apiVersionSetId=$(echo "$jsonFile" | jq -r '.info.title' | tr -d '[:space:]' | tr -cd '[:alnum:]_' | sed 's/[^0-9a-zA-Z_]/-/g')
     apiVersironNumber=$(echo "$jsonFile" | jq -r '.info.version' | cut -d'.' -f1)
     apiVersionId="Version $apiVersironNumber"
-    az apim api create --service-name "$APIM_INSTANCE" -g "$RESOURCE_GROUP" --api-id "$apiVersionSetId" --path "/${apiVersionSetId}" --display-name "$jsonFile.info.title"
+    displayName=$(echo "$jsonFile" | jq -r '.info.title')
+    az apim api create --service-name "${APIM_INSTANCE}" -g "${RESOURCE_GROUP}" --api-id "${apiVersionSetId}" --path "/${apiVersionSetId}" --display-name "${displayName}"
 }
 
 
