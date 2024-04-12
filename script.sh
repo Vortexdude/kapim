@@ -16,6 +16,8 @@ gitchanges=$(git diff --name-status "$FIRST_COMMIT_HASH" "$current_hash")
 
 echo "Git Changes - - "
 
+echo "$gitchanges"
+
 craeteApi (){
 	apiFilePath=$1
 	jsonFile=$(cat "$apiFilePath" | jq -c '.')
