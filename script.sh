@@ -18,17 +18,20 @@ echo "$gitchanges"
 craeteApi (){
 	apiFilePath=$1
 	jsonFile=$(cat "$apiFilePath" | jq -c '.')
-	apiVersionSetId=$(echo "$jsonFile" | jq -r '.info.title' | tr -d '[:space:]' | tr -cd '[:alnum:]_' | sed 's/[^0-9a-zA-Z_]/-/g')
+	# apiVersionSetId=$(echo "$jsonFile" | jq -r '.info.title' | tr -d '[:space:]' | tr -cd '[:alnum:]_' | sed 's/[^0-9a-zA-Z_]/-/g')
     apiVersironNumber=$(echo "$jsonFile" | jq -r '.info.version' | cut -d'.' -f1)
-    apiRevisionId=$(echo "$jsonFile" | jq -r '.info.version' | cut -d'.' -f2)
-    apiVersionId="Version $apiVersironNumber"
+    # apiRevisionId=$(echo "$jsonFile" | jq -r '.info.version' | cut -d'.' -f2)
+    # apiVersionId="Version $apiVersironNumber"
     specificationFormat="OpenApi"
-    displayName=$(echo "$jsonFile" | jq -r '.info.title')
-    az apim api create --service-name "${APIM_INSTANCE}" -g "${RESOURCE_GROUP}" --api-id "${apiVersionSetId}" --path "/${apiVersionSetId}" --display-name "${displayName}"
+    # displayName=$(echo "$jsonFile" | jq -r '.info.title')
     serviceUrl=$(echo "$jsonFile" | jq -r '.servers[0].url')
-    basePath="${serviceUrl}"
-    az apim api import --service-name "${APIM_INSTANCE}" -g "${RESOURCE_GROUP}"  --specification-format OpenApiJson --specification-path "${apiFilePath}" --path "${basePath}"
-
+    basePath=$(echo "$jsonFile" | jq -r '.servers[0].url | @uri')
+	az apim api import \
+		--service-name "${APIM_INSTANCE}" \
+		--resource-group "${RESOURCE_GROUP}" \
+		--specification-format "${specificationFormat}" \
+		--specification-path "${apiFilePath}" \
+		--path "${basePath}" 
 }
 
 
