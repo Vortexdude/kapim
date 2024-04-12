@@ -1,0 +1,102 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "AccessToken-v2",
+    "description": "Provides a token-based authentication to allow an application to access a DLR API.",
+    "version": "2.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://playground.digitalrealty.com/v2/auth"
+    },
+    {
+      "url": "https://sandbox.digitalrealty.com/v2/auth"
+    },
+    {
+      "url": "https://api.digitalrealty.com/v2/auth"
+    }
+  ],
+  "paths": {
+    "/token": {
+      "post": {
+        "tags": [
+          "Get Token"
+        ],
+        "description": "The method can be used to retrieve an access token used as authorization for the DLR API's",
+        "operationId": "token",
+        "requestBody": {
+          "$ref": "#/components/requestBodies/tokenPost"
+        },
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/tokenSchema"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "tokenSchema": {
+        "title": "Token",
+        "type": "object",
+        "properties": {
+          "access_token": {
+            "type": "string"
+          },
+          "expires_in": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "token_type": {
+            "type": "string"
+          },
+          "scope": {
+            "type": "string"
+          }
+        },
+        "example": {
+          "access_token": "eyJhbGciOiJSUzI1NiIsIm1bnci",
+          "expires_in": 3600,
+          "token_type": "Bearer",
+          "scope": ""
+        }
+      }
+    },
+    "requestBodies": {
+      "tokenPost": {
+        "content": {
+          "application/x-www-form-urlencoded": {
+            "schema": {
+              "required": [
+                "client_id",
+                "client_secret",
+                "grant_type"
+              ],
+              "type": "object",
+              "properties": {
+                "client_id": {
+                  "type": "string"
+                },
+                "client_secret": {
+                  "type": "string"
+                },
+                "grant_type": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        },
+        "required": true
+      }
+    }
+  }
+}
