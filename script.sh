@@ -19,13 +19,13 @@ craeteApi (){
 	apiFilePath=$1
 	jsonFile=$(cat "$apiFilePath" | jq -c '.')
 	# apiVersionSetId=$(echo "$jsonFile" | jq -r '.info.title' | tr -d '[:space:]' | tr -cd '[:alnum:]_' | sed 's/[^0-9a-zA-Z_]/-/g')
-    apiVersironNumber=$(echo "$jsonFile" | jq -r '.info.version' | cut -d'.' -f1)
-    # apiRevisionId=$(echo "$jsonFile" | jq -r '.info.version' | cut -d'.' -f2)
-    # apiVersionId="Version $apiVersironNumber"
-    specificationFormat="OpenApi"
-    # displayName=$(echo "$jsonFile" | jq -r '.info.title')
-    serviceUrl=$(echo "$jsonFile" | jq -r '.servers[0].url')
-    basePath=$(echo "$jsonFile" | jq -r '.servers[0].url | @uri')
+	apiVersironNumber=$(echo "$jsonFile" | jq -r '.info.version' | cut -d'.' -f1)
+	# apiRevisionId=$(echo "$jsonFile" | jq -r '.info.version' | cut -d'.' -f2)
+	# apiVersionId="Version $apiVersironNumber"
+	specificationFormat="OpenApi"
+	# displayName=$(echo "$jsonFile" | jq -r '.info.title')
+	serviceUrl=$(echo "$jsonFile" | jq -r '.servers[0].url')
+	basePath=$(echo "$jsonFile" | jq -r '.servers[0].url | @uri')
 	az apim api import \
 		--service-name "${APIM_INSTANCE}" \
 		--resource-group "${RESOURCE_GROUP}" \
@@ -45,23 +45,23 @@ while IFS= read -r line; do
 	if [ "${apiFilePath%%/*}" != "APIs" ]; then
         echo "Ignoring file: $apiFilePath"
         continue
-    fi
+    	fi
 
-    fileType=${apiFilePath##*.}
-    filepath="$sourceFolder/${apiFilePath//APIs\//}"
-
-    echo "Handling API: $filePath"
-
-    if [ "$modificationType" == "A" ]; then
-       if [ "$fileType" == "json" ]; then
-           echo "Importing Json format API: $filePath"
-           
-           craeteApi $filepath
-
-       else
-           echo "Unsupported file type: $fileType..."
-       fi
-    fi
+	fileType=${apiFilePath##*.}
+	filepath="$sourceFolder/${apiFilePath//APIs\//}"
+	
+	echo "Handling API: $filePath"
+	
+	if [ "$modificationType" == "A" ]; then
+		if [ "$fileType" == "json" ]; then
+		   echo "Importing Json format API: $filePath"
+		   
+		   craeteApi $filepath
+		
+		else
+		   echo "Unsupported file type: $fileType..."
+		fi
+	fi
     
 
 done < <(echo "$gitchanges")
