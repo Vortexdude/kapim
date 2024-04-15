@@ -15,7 +15,7 @@ echo "Git Changes - - "
 
 echo "$gitchanges"
 
-craeteApi (){
+createApi (){
 	apiFilePath=$1
 	jsonFile=$(cat "$apiFilePath" | jq -c '.')
 	# apiVersionSetId=$(echo "$jsonFile" | jq -r '.info.title' | tr -d '[:space:]' | tr -cd '[:alnum:]_' | sed 's/[^0-9a-zA-Z_]/-/g')
@@ -56,7 +56,7 @@ while IFS= read -r line; do
 		if [ "$fileType" == "json" ]; then
 		   echo "Importing Json format API: $filePath"
 		   
-		   craeteApi $filepath
+		   createApi $filepath
 		
 		else
 		   echo "Unsupported file type: $fileType..."
