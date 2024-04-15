@@ -65,3 +65,5 @@ while IFS= read -r line; do
     
 
 done < <(echo "$gitchanges")
+
+echo "New Hash - $current_hash"
