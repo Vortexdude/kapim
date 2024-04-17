@@ -59,18 +59,20 @@ createApi (){
 	specificationFormat="OpenApi"
 	# displayName=$(echo "$jsonFile" | jq -r '.info.title')
 	serviceUrl=$(echo "$jsonFile" | jq -r '.servers[0].url')
-	basePath=$(echo "$jsonFile" | jq -r '.servers[0].url | @uri')
-	az apim api import \
-		--service-name "${APIM_INSTANCE}" \
-		--resource-group "${RESOURCE_GROUP}" \
-		--specification-format "${specificationFormat}" \
-		--specification-path "${apiFilePath}" \
-		--path "${basePath}" 
-}
+	basePath=$(echo "$jsonFile" | jq -r '.paths | keys[0]')
+	az apim api import --resource-group "${RESOURCE_GROUP}" \
+	                   --service-name "${APIM_INSTANCE}" \
+	                   --specification-path ./api-spec.json \
+	                   --display-name "Comments-v1" \
+	                   --path "${basePath}" \
+	                   --api-type http \
+	                   --protocols "https" \
+	                   --subscription-required \
+	                   --authorization-scope "Authorization"
 
-for file in *; do 
+for file in APIs/*; do 
     if [ -f "$file" ]; then 
-        echo "Importing Json format API: $filePath"
+        echo "Importing Json format API: $file"
         createApi "$file"
     fi 
 done
