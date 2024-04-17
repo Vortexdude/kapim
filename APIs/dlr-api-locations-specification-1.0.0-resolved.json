@@ -1,0 +1,148 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Locations-v1",
+    "description": "The Locations API providing a list of location that the user has permission to view.",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://playground.digitalrealty.com/v1"
+    },
+    {
+      "url": "https://sandbox.digitalrealty.com/v1"
+    },
+    {
+      "url": "https://api.digitalrealty.com/v1"
+    }
+  ],
+  "security": [
+    {
+      "Authorization": []
+    }
+  ],
+  "paths": {
+    "/locations": {
+      "get": {
+        "tags": [
+          "Locations"
+        ],
+        "description": "The method is used to retrieve location information based on the site.",
+        "operationId": "locations",
+        "parameters": [
+          {
+            "name": "Master-Account-Id",
+            "in": "header",
+            "description": "Master account id to be passed as a header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "Account-Id",
+            "in": "header",
+            "description": "Account id to be passed as a header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "site",
+            "in": "query",
+            "description": "Specify the site to filter by",
+            "required": true,
+            "style": "form",
+            "explode": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Locations"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Locations": {
+        "title": "Locations",
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "location": {
+            "type": "string"
+          },
+          "parentId": {
+            "type": "string"
+          }
+        },
+        "example": [
+          {
+            "id": "031d9bfb132a360061e87e776144b00d",
+            "location": "Room 01",
+            "parentId": "761d9bfb132a360061e87e776144b006"
+          },
+          {
+            "id": "761d9bfb132a360061e87e776144b006",
+            "location": "Rack 01",
+            "parentId": "031d9bfb132a360061e87e776144b00d"
+          }
+        ]
+      }
+    },
+    "parameters": {
+      "siteParam": {
+        "name": "site",
+        "in": "query",
+        "description": "Specify the site to filter by",
+        "required": true,
+        "style": "form",
+        "explode": true,
+        "schema": {
+          "type": "string"
+        }
+      },
+      "masterAccountIdParam": {
+        "name": "Master-Account-Id",
+        "in": "header",
+        "description": "Master account id to be passed as a header",
+        "required": true,
+        "schema": {
+          "type": "string"
+        }
+      },
+      "accountIdParam": {
+        "name": "Account-Id",
+        "in": "header",
+        "description": "Account id to be passed as a header",
+        "required": true,
+        "schema": {
+          "type": "string"
+        }
+      }
+    },
+    "securitySchemes": {
+      "Authorization": {
+        "type": "http",
+        "description": "Get the access token by calling the AccessToken API first. Then provide the access token below as the Authorization header and click Authorize.",
+        "scheme": "bearer",
+        "bearerFormat": "Bearer"
+      }
+    }
+  }
+}

@@ -1,0 +1,939 @@
+---
+openapi: 3.0.0
+info:
+  title: ShipmentsTickets-v1
+  description: Notify DLR about an incoming shipment that needs to be installed in
+    the space occupied by the customer.
+  version: 1.0.7
+servers:
+- url: https://playground.digitalrealty.com/v1
+- url: https://sandbox.digitalrealty.com/v1
+- url: https://api.digitalrealty.com/v1
+security:
+- Authorization: []
+tags:
+- name: Shipments Tickets
+paths:
+  "/shipment-tickets":
+    get:
+      tags:
+      - Shipments Tickets
+      description: The method can be used to retrieve all shipment tickets of the
+        customers account.
+      operationId: shipments-list
+      parameters:
+      - name: master-account-id
+        in: header
+        description: Master account id to be passed as a header
+        required: true
+        schema:
+          type: string
+      - name: account-id
+        in: header
+        description: Account id to be passed as a header
+        required: true
+        schema:
+          type: string
+      - name: site
+        in: query
+        description: Specify the sitecode to filter by
+        schema:
+          type: string
+      - name: status
+        in: query
+        description: Specify the status to filter by
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+          enum:
+          - New
+          - In Progress
+          - Completed
+          - Cancelled
+      - name: createdBy
+        in: query
+        description: Specify the email to filter by
+        schema:
+          type: string
+      - name: size
+        in: query
+        description: The number of items to return
+        schema:
+          maximum: 1000
+          minimum: 1
+          type: integer
+          format: int32
+          default: 25
+      - name: page
+        in: query
+        description: The page number to return
+        schema:
+          minimum: 0
+          type: integer
+          format: int32
+          default: 0
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Shipments"
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: client
+                  message: The request could not be understood by the server due to
+                    malformed syntax.
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: client
+                  message: Unauthorized. Access token is missing or invalid.
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: client
+                  message: The server understood the request, but will not fulfill
+                    it.
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: client
+                  message: Resource not found.
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: server
+                  message: Oops. Something went wrong. The server encountered an internal
+                    error or misconfiguration and was unable to complete your request.
+    post:
+      tags:
+      - Shipments Tickets
+      description: The method can be used to schedules a shipment ticket.
+      operationId: shipments-create
+      parameters:
+      - name: master-account-id
+        in: header
+        description: Master account id to be passed as a header
+        required: true
+        schema:
+          type: string
+      - name: account-id
+        in: header
+        description: Account id to be passed as a header
+        required: true
+        schema:
+          type: string
+      requestBody:
+        "$ref": "#/components/requestBodies/ShipmentsPost"
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ShipmentsDetails"
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: client
+                  message: The request could not be understood by the server due to
+                    malformed syntax.
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: client
+                  message: Unauthorized. Access token is missing or invalid.
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: client
+                  message: The server understood the request, but will not fulfill
+                    it.
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: client
+                  message: Resource not found.
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: server
+                  message: Oops. Something went wrong. The server encountered an internal
+                    error or misconfiguration and was unable to complete your request.
+  "/shipment-tickets/{id}":
+    get:
+      tags:
+      - Shipments Tickets
+      description: The method can be used to retrieve details of a shipment ticket.
+      operationId: shipments-read
+      parameters:
+      - name: master-account-id
+        in: header
+        description: Master account id to be passed as a header
+        required: true
+        schema:
+          type: string
+      - name: account-id
+        in: header
+        description: Account id to be passed as a header
+        required: true
+        schema:
+          type: string
+      - name: id
+        in: path
+        description: Specify the identification number
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ShipmentsDetails"
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: client
+                  message: The request could not be understood by the server due to
+                    malformed syntax.
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: client
+                  message: Unauthorized. Access token is missing or invalid.
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: client
+                  message: The server understood the request, but will not fulfill
+                    it.
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: client
+                  message: Resource not found.
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: server
+                  message: Oops. Something went wrong. The server encountered an internal
+                    error or misconfiguration and was unable to complete your request.
+    put:
+      tags:
+      - Shipments Tickets
+      description: The method can be used to update a shipment ticket.
+      operationId: shipments-update
+      parameters:
+      - name: master-account-id
+        in: header
+        description: Master account id to be passed as a header
+        required: true
+        schema:
+          type: string
+      - name: account-id
+        in: header
+        description: Account id to be passed as a header
+        required: true
+        schema:
+          type: string
+      - name: id
+        in: path
+        description: Specify the identification number
+        required: true
+        schema:
+          type: string
+      requestBody:
+        "$ref": "#/components/requestBodies/ShipmentsUpdate"
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ShipmentsDetails"
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: client
+                  message: The request could not be understood by the server due to
+                    malformed syntax.
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: client
+                  message: Unauthorized. Access token is missing or invalid.
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: client
+                  message: The server understood the request, but will not fulfill
+                    it.
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: client
+                  message: Resource not found.
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: server
+                  message: Oops. Something went wrong. The server encountered an internal
+                    error or misconfiguration and was unable to complete your request.
+  "/shipment-tickets/{id}/cancel":
+    put:
+      tags:
+      - Shipments Tickets
+      description: The method can be used to cancel a shipment ticket.
+      operationId: shipments-cancel
+      parameters:
+      - name: master-account-id
+        in: header
+        description: Master account id to be passed as a header
+        required: true
+        schema:
+          type: string
+      - name: account-id
+        in: header
+        description: Account id to be passed as a header
+        required: true
+        schema:
+          type: string
+      - name: id
+        in: path
+        description: Specify the identification number
+        required: true
+        schema:
+          type: string
+      requestBody:
+        "$ref": "#/components/requestBodies/ShipmentsCancel"
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_200"
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: client
+                  message: The request could not be understood by the server due to
+                    malformed syntax.
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: client
+                  message: Unauthorized. Access token is missing or invalid.
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: client
+                  message: The server understood the request, but will not fulfill
+                    it.
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: client
+                  message: Resource not found.
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: server
+                  message: Oops. Something went wrong. The server encountered an internal
+                    error or misconfiguration and was unable to complete your request.
+
+components:
+  schemas:
+    Shipments:
+      title: Shipments
+      type: object
+      properties:
+        content:
+          type: array
+          items:
+            "$ref": "#/components/schemas/Shipments_content"
+        pageable:
+          "$ref": "#/components/schemas/Shipments_pageable"
+      example:
+        content:
+        - id: WO9340434
+          title: "Test One"
+          status: "New"
+          site: "IAD024"
+          courier: "FedEx"
+          requiresRemoteHandsTicket: "No"
+          createdOn: "2023-08-05 04:30:30"
+          updatedOn: "2023-08-05 04:30:30"
+          closedOn: ''
+          createdBy: John Doe
+        pageable:
+          last: true
+          totalPages: 1
+          totalElements: 1
+          size: 25
+          number: 0
+          numberOfElements: 1
+          first: true
+          empty: false
+    ShipmentsDetails:
+      title: Shipments Details
+      type: object
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+        status:
+          type: string
+          enum:
+          - New
+          - In Progress
+          - Completed
+          - Cancelled
+        site:
+          type: string
+        description:
+          type: string
+        courier:
+          type: string
+        customerReference:
+          type: string
+        trackingNumber:
+          type: string
+        requiresRemoteHandsTicket:
+          type: string
+        packageCount:
+          type: integer
+        isLoadingBayRequired:
+          type: boolean
+        estimatedDeliveryDate:
+          type: string
+          format: date-time
+        createdOn:
+          type: string
+          format: date-time
+        updatedOn:
+          type: string
+          format: date-time
+        closedOn:
+          type: string
+          format: date-time
+        createdBy:
+          type: string
+        notificationRecipients:
+          type: string
+        specialInstructions:
+          type: string
+        ticketType:
+          type: string
+        comments:
+          type: array
+          items:
+            "$ref": "#/components/schemas/ShipmentsDetails_comments"
+      example:
+        id: WO9342904
+        title: "Server Shipment X101"
+        status: New
+        site: "IAD024"
+        description: "New delivery for DFW010"
+        courier: DHL
+        customerReference: REF01234
+        trackingNumber: TRACK001
+        requiresRemoteHandsTicket: ""
+        packageCount: 1
+        isLoadingBayRequired: false
+        estimatedDeliveryDate: '2023-09-21 10:00:00'
+        createdOn: "2023-08-29 14:19:31"
+        updatedOn: "2023-08-29 14:19:31"
+        closedOn: ''
+        createdBy: John Doe
+        notificationRecipients: jane_doe@email.com, jake_doe@email.com
+        specialInstructions: heavy package
+        ticketType: Shipping and Receiving
+        comments: []
+
+    inline_response_400:
+      type: object
+      properties:
+        error:
+          "$ref": "#/components/schemas/inline_response_400_error"
+    inline_response_200:
+      type: object
+      properties:
+        message:
+          type: string
+      example:
+        message: "Work Order WO9332376 has been cancelled."
+    Shipments_content:
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+        status:
+          type: string
+          enum:
+          - New
+          - In Progress
+          - Completed
+          - Cancelled
+        site:
+          type: string
+        courier:
+          type: string
+        requiresRemoteHandsTicket:
+          type: string
+        createdOn:
+          type: string
+          format: date-time
+        updatedOn:
+          type: string
+          format: date-time
+        closedOn:
+          type: string
+          format: date-time
+        createdBy:
+          type: string
+    Shipments_pageable:
+      properties:
+        last:
+          type: boolean
+        totalPages:
+          type: integer
+          format: int32
+        totalElements:
+          type: integer
+          format: int64
+        size:
+          type: integer
+          format: int32
+        number:
+          type: integer
+          format: int32
+        numberOfElements:
+          type: integer
+          format: int32
+        first:
+          type: boolean
+        empty:
+          type: boolean
+    ShipmentsDetails_comments:
+      properties:
+        comment:
+          type: string
+        commentedBy:
+          type: string
+        commentedOn:
+          type: string
+          format: date-time
+
+    inline_response_400_error:
+      type: object
+      properties:
+        correlationId:
+          type: string
+        type:
+          type: string
+          enum:
+          - client
+          - server
+        message:
+          type: string
+        details:
+          type: string
+  responses:
+    '400':
+      description: Bad Request
+      content:
+        application/json:
+          schema:
+            "$ref": "#/components/schemas/inline_response_400"
+          example:
+            error:
+              correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+              type: client
+              message: The request could not be understood by the server due to malformed
+                syntax.
+    '401':
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            "$ref": "#/components/schemas/inline_response_400"
+          example:
+            error:
+              correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+              type: client
+              message: Unauthorized. Access token is missing or invalid.
+    '403':
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            "$ref": "#/components/schemas/inline_response_400"
+          example:
+            error:
+              correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+              type: client
+              message: The server understood the request, but will not fulfill it.
+    '404':
+      description: Not Found
+      content:
+        application/json:
+          schema:
+            "$ref": "#/components/schemas/inline_response_400"
+          example:
+            error:
+              correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+              type: client
+              message: Resource not found.
+    '500':
+      description: Internal Server Error
+      content:
+        application/json:
+          schema:
+            "$ref": "#/components/schemas/inline_response_400"
+          example:
+            error:
+              correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+              type: server
+              message: Oops. Something went wrong. The server encountered an internal
+                error or misconfiguration and was unable to complete your request.
+  parameters:
+    status:
+      name: status
+      in: query
+      description: Specify the status to filter by
+      required: false
+      style: form
+      explode: true
+      schema:
+        type: string
+        enum:
+        - New
+        - In Progress
+        - Completed
+        - Cancelled
+    masterAccountIdParam:
+      name: master-account-id
+      in: header
+      description: Master account id to be passed as a header
+      required: true
+      schema:
+        type: string
+    accountIdParam:
+      name: account-id
+      in: header
+      description: Account id to be passed as a header
+      required: true
+      schema:
+        type: string
+    siteParam:
+      name: site
+      in: query
+      description: Specify the sitecode to filter by
+      schema:
+        type: string
+    createdbyParam:
+      name: createdBy
+      in: query
+      description: Specify the email to filter by
+      schema:
+        type: string
+    sizeParam:
+      name: size
+      in: query
+      description: The number of items to return
+      schema:
+        maximum: 1000
+        minimum: 1
+        type: integer
+        format: int32
+        default: 25
+    pageParam:
+      name: page
+      in: query
+      description: The page number to return
+      schema:
+        minimum: 0
+        type: integer
+        format: int32
+        default: 0
+    idParam:
+      name: id
+      in: path
+      description: Specify the identification number
+      required: true
+      schema:
+        type: string
+  requestBodies:
+    ShipmentsPost:
+      content:
+        application/json:
+          schema:
+            required:
+            - courier
+            - description
+            - site
+            - title
+            type: object
+            properties:
+              title:
+                type: string
+              site:
+                type: string
+              description:
+                type: string
+              courier:
+                type: string
+              customerReference:
+                type: string
+              trackingNumber:
+                type: string
+              packageCount:
+                type: integer
+              isLoadingBayRequired:
+                type: boolean
+              estimatedDeliveryDate:
+                type: string
+                format: date-time
+              specialInstructions:
+                type: string
+
+              notificationRecipients:
+                type: string
+            example:
+              title: Server Shipment X101
+              site: DFW010
+              description: New delivery for DFW010
+              courier: DHL
+              customerReference: REF01234
+              trackingNumber: TRACK001
+              packageCount: 1
+              isLoadingBayRequired: false
+              estimatedDeliveryDate: '2023-09-21 10:00:00'
+              specialInstructions: heavy package
+              notificationRecipients: jane_doe@email.com, jake_doe@email.com
+      required: true
+    ShipmentsUpdate:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              title:
+                type: string
+              site:
+                type: string
+              description:
+                type: string
+              specialInstructions:
+                type: string
+              courier:
+                type: string
+                
+              customerReference:
+                type: string
+              trackingNumber:
+                type: string
+              packageCount:
+                type: number
+              isLoadingBayRequired:
+                type: boolean
+              estimatedDeliveryDate:
+                type: string
+                format: date-time
+              notificationRecipients:
+                type: string
+            example:
+              title: "Server Shipment X101"
+              site : "IAD024"
+              description: "New delivery for DFW010"
+              specialInstructions: "Test"
+              courier: "DHL"
+              customerReference: REF05678
+              trackingNumber: "1"
+              packageCount: 1
+              isLoadingBayRequired: false
+              estimatedDeliveryDate: "022-11-03 18:00:00"
+              notificationRecipients: "test@email.com,test2@email.com"
+      required: true
+    ShipmentsCancel:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              cancelReason:
+                type: string
+                default: Request no longer needed
+                enum:
+                - Duplicate request
+                - Request entered in error
+                - Request no longer needed
+            example:
+              cancelReason: Request no longer needed
+      required: true
+  securitySchemes:
+    Authorization:
+      type: http
+      description: Get the access token by calling the AccessToken API first. Then
+        provide the access token below as the Authorization header and click Authorize.
+      scheme: bearer
+      bearerFormat: Bearer

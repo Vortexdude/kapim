@@ -1,0 +1,603 @@
+---
+openapi: 3.0.0
+info:
+  title: Notifications-v1
+  description: This API allows users to view available notifications applicable to
+    their account’s specific functions/permissions.
+  version: 1.0.1
+servers:
+- url: https://playground.digitalrealty.com/v1
+- url: https://sandbox.digitalrealty.com/v1
+- url: https://api.digitalrealty.com/v1
+security:
+- Authorization: []
+paths:
+  "/notifications":
+    get:
+      tags:
+      - Notifications
+      description: The method can be used to retrieve all notifications of the customers
+        account.
+      operationId: notifications-list
+      parameters:
+      - name: master-account-id
+        in: header
+        description: Master account id to be passed as a header
+        required: true
+        schema:
+          type: string
+      - name: account-id
+        in: header
+        description: Account id to be passed as a header
+        required: true
+        schema:
+          type: string
+      - name: type
+        in: query
+        description: Specify the type to filter by
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+          enum:
+          - DCIM Alerts
+          - Emergency Repair
+          - Planned Site Maintenance
+          - Service Ticket Updates
+      - name: timestamp
+        in: query
+        description: Specify the timezone to filter by
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+          format: date
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  "$ref": "#/components/schemas/Notifications"
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: client
+                  message: The request could not be understood by the server due to
+                    malformed syntax.
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: client
+                  message: Unauthorized. Access token is missing or invalid.
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: client
+                  message: The server understood the request, but will not fulfill
+                    it.
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: client
+                  message: Resource not found.
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: server
+                  message: Oops. Something went wrong. The server encountered an internal
+                    error or misconfiguration and was unable to complete your request.
+  "/notifications/{notificationId}":
+    get:
+      tags:
+      - Notifications
+      description: The method can be used to retrieve the details of a notification.
+      operationId: notifications-read
+      parameters:
+      - name: master-account-id
+        in: header
+        description: Master account id to be passed as a header
+        required: true
+        schema:
+          type: string
+      - name: account-id
+        in: header
+        description: Account id to be passed as a header
+        required: true
+        schema:
+          type: string
+      - name: notificationId
+        in: path
+        description: Specify the identification number
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_200"
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: client
+                  message: The request could not be understood by the server due to
+                    malformed syntax.
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: client
+                  message: Unauthorized. Access token is missing or invalid.
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: client
+                  message: The server understood the request, but will not fulfill
+                    it.
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: client
+                  message: Resource not found.
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: server
+                  message: Oops. Something went wrong. The server encountered an internal
+                    error or misconfiguration and was unable to complete your request.
+    put:
+      tags:
+      - Notifications
+      description: The method can be used to update a notification.
+      operationId: notification-update
+      parameters:
+      - name: master-account-id
+        in: header
+        description: Master account id to be passed as a header
+        required: true
+        schema:
+          type: string
+      - name: account-id
+        in: header
+        description: Account id to be passed as a header
+        required: true
+        schema:
+          type: string
+      - name: notificationId
+        in: path
+        description: Specify the identification number
+        required: true
+        schema:
+          type: string
+      requestBody:
+        "$ref": "#/components/requestBodies/NotificatiosnUpdate"
+      responses:
+        '200':
+          description: OK
+
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: client
+                  message: The request could not be understood by the server due to
+                    malformed syntax.
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: client
+                  message: Unauthorized. Access token is missing or invalid.
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: client
+                  message: The server understood the request, but will not fulfill
+                    it.
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: client
+                  message: Resource not found.
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: server
+                  message: Oops. Something went wrong. The server encountered an internal
+                    error or misconfiguration and was unable to complete your request.
+components:
+  schemas:
+    Notifications:
+      type: object
+      properties:
+        notificationId:
+          type: string
+        woOrAlertNumber:
+          type: string
+        notificationDescription:
+          type: string
+        siteCode:
+          type: string
+        location:
+          type: string
+        notificationType:
+          type: string
+          enum:
+          - DCIM Alerts
+          - Emergency Repair
+          - Planned Site Maintenance
+          - Service Ticket Updates
+        timestamp:
+          type: string
+          format: date-time
+        isDcimNotification:
+          type: boolean
+        readFlag:
+          type: boolean
+        deleteFlag:
+          type: boolean
+      example:
+        notificationId: WO08680073PHX15COLO_8_Starbucks_Cage_8.04821707fa-ab6c-4939-afb6-bdc3b43a136a
+        woOrAlertNumber: WO08680073
+        notificationDescription: Pumps PM Semi-Annual (Q3/Q4) PHX15_BASE_NM_CP4_CWP_1
+        siteCode: PHX015
+        location: COLO 8 Starbucks Cage 8.04
+        notificationType: Planned Site Maintenance
+        timestamp: '2023-10-30 13:00:00'
+        isDcimNotification: false
+        readFlag: false
+        deleteFlag: false
+    NotificationsDetails:
+      title: Notifications Details
+      type: object
+      properties:
+        notificationId:
+          type: string
+        woOrAlertNumber:
+          type: string
+        site:
+          type: string
+        location:
+          type: string
+        ticketType:
+          type: string
+        activityType:
+          type: string
+        activitySubType:
+          type: string
+        activityCategory:
+          type: string
+        approvalStatus:
+          type: string
+        status:
+          type: string
+        serviceType:
+          type: string
+        riskLevel:
+          type: string
+        startDate:
+          type: string
+        endDate:
+          type: string
+
+        highLevelSummary:
+          type: string
+
+        isDcimNotification:
+          type: boolean
+      example:
+        notificationId: WO08680073PHX15COLO_8_Starbucks_Cage_8.04821707fa-ab6c-4939-afb6-bdc3b43a136a
+        woOrAlertNumber: WO08680073
+        site: PHX015
+        location: PHX15_BASE_NM_CP4_CWP_1
+        ticketType: Customer Support
+        activityType: "Mechanical"
+        activitySubType: "Chiller"
+        activityCategory: "Chiller Maintenance - Off line"
+        approvalStatus: Approved
+        status: Ready
+        serviceType: Planned Maintenance
+        riskLevel: High
+        startDate: '2023-10-30 13:00:00'
+        endDate: '2023-10-30 13:00:00'
+        highLevelSummary: '1\tThroughout these instructions, if any clarification is needed, please refer to site specific MOPs.\n2\tAll Electrical PPE measures are in place & being utilized as defined/required in MOP/SOP.'
+        isDcimNotification: false
+    NotificationsDcim:
+      title: Notifications Dcim
+      type: object
+      properties:
+        notificationId:
+          type: string
+        woOrAlertNumber:
+          type: string
+        isDcimNotification:
+          type: boolean
+        id:
+          type: integer
+        alertId:
+          type: string
+        alertName:
+          type: string
+        alertType:
+          type: string
+        alertCategory:
+          type: string
+        alertThreshold:
+          type: string
+        deviceName:
+          type: string
+        functionValue:
+          type: number
+          format: double
+        alertTimestamp:
+          type: string
+          format: date-time
+      example:
+        notificationId: ALRT0123456_DFW010
+        woOrAlertNumber: ALRT0123456
+        isDcimNotification: true
+        id: 123456
+        alertId: ALRT0123456
+        alertName: BMS_SLA_Temp
+        alertType: critical
+        alertCategory: environmental
+        alertThreshold: '70'
+        deviceName: S110_Total Load_00
+        functionValue: 70.5
+        alertTimestamp: '2022-09-12 10:11:23'
+    inline_response_400:
+      type: object
+      properties:
+        error:
+          "$ref": "#/components/schemas/inline_response_400_error"
+    inline_response_200:
+      oneOf:
+      - "$ref": "#/components/schemas/NotificationsDetails"
+      - "$ref": "#/components/schemas/NotificationsDcim"
+    inline_response_200_1:
+      type: object
+      properties:
+        message:
+          type: string
+      example:
+        message: We have received your request for updating of workorder WO0123456.
+    NotificationsDetails_comment:
+      type: object
+      properties:
+        value:
+          type: string
+        sys_created_by:
+          type: string
+        sys_created_on:
+          type: string
+          format: date-time
+    inline_response_400_error:
+      type: object
+      properties:
+        correlationId:
+          type: string
+        type:
+          type: string
+          enum:
+          - client
+          - server
+        message:
+          type: string
+        details:
+          type: string
+  responses:
+    '400':
+      description: Bad Request
+      content:
+        application/json:
+          schema:
+            "$ref": "#/components/schemas/inline_response_400"
+          example:
+            error:
+              correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+              type: client
+              message: The request could not be understood by the server due to malformed
+                syntax.
+    '401':
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            "$ref": "#/components/schemas/inline_response_400"
+          example:
+            error:
+              correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+              type: client
+              message: Unauthorized. Access token is missing or invalid.
+    '403':
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            "$ref": "#/components/schemas/inline_response_400"
+          example:
+            error:
+              correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+              type: client
+              message: The server understood the request, but will not fulfill it.
+    '404':
+      description: Not Found
+      content:
+        application/json:
+          schema:
+            "$ref": "#/components/schemas/inline_response_400"
+          example:
+            error:
+              correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+              type: client
+              message: Resource not found.
+    '500':
+      description: Internal Server Error
+      content:
+        application/json:
+          schema:
+            "$ref": "#/components/schemas/inline_response_400"
+          example:
+            error:
+              correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+              type: server
+              message: Oops. Something went wrong. The server encountered an internal
+                error or misconfiguration and was unable to complete your request.
+  parameters:
+    typeParam:
+      name: type
+      in: query
+      description: Specify the type to filter by
+      required: false
+      style: form
+      explode: true
+      schema:
+        type: string
+        enum:
+        - DCIM Alerts
+        - Emergency Repair
+        - Planned Site Maintenance
+        - Service Ticket Updates
+    timestampParam:
+      name: timestamp
+      in: query
+      description: Specify the timezone to filter by
+      required: false
+      style: form
+      explode: true
+      schema:
+        type: string
+        format: date
+    masterAccountIdParam:
+      name: master-account-id
+      in: header
+      description: Master account id to be passed as a header
+      required: true
+      schema:
+        type: string
+    accountIdParam:
+      name: account-id
+      in: header
+      description: Account id to be passed as a header
+      required: true
+      schema:
+        type: string
+    idParam:
+      name: id
+      in: path
+      description: Specify the identification number
+      required: true
+      schema:
+        type: string
+  requestBodies:
+    NotificatiosnUpdate:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              readFlag:
+                type: boolean
+              deleteFlag:
+                type: boolean
+  securitySchemes:
+    Authorization:
+      type: http
+      description: Get the access token by calling the AccessToken API first. Then
+        provide the access token below as the Authorization header and click Authorize.
+      scheme: bearer
+      bearerFormat: Bearer

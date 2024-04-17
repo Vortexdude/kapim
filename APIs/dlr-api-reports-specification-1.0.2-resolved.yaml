@@ -1,0 +1,1289 @@
+---
+openapi: 3.0.1
+info:
+  title: Reports-v1
+  description: The Reports API allows customers to download Security, DCIM and Planned
+    Site Maintenance Reports.
+  version: 1.0.1
+servers:
+- url: https://playground.digitalrealty.com/v1
+- url: https://sandbox.digitalrealty.com/v1
+- url: https://api.digitalrealty.com/v1
+security:
+- Authorization: []
+tags:
+- name: Reports
+- name: Workorders
+paths:
+  "/reports/request":
+    get:
+      tags:
+      - Reports
+      description: The method can be used to retrieve CI's that are needed to retrieve
+        reports.
+      operationId: reports-request
+      parameters:
+      - name: master-account-id
+        in: header
+        description: Master account id to be passed as a header
+        required: true
+        schema:
+          type: string
+      - name: account-id
+        in: header
+        description: Account id to be passed as a header
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/reportCiSchema"
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: client
+                  message: The request could not be understood by the server due to
+                    malformed syntax.
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: client
+                  message: Unauthorized. Access token is missing or invalid.
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: client
+                  message: The server understood the request, but will not fulfill
+                    it.
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: client
+                  message: Resource not found.
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: server
+                  message: Oops. Something went wrong. The server encountered an internal
+                    error or misconfiguration and was unable to complete your request.
+  "/reports":
+    post:
+      tags:
+      - Reports
+      description: The method can be used to retrieve reports for one or more CI's
+      operationId: reports
+      parameters:
+      - name: master-account-id
+        in: header
+        description: Master account id to be passed as a header
+        required: true
+        schema:
+          type: string
+      - name: account-id
+        in: header
+        description: Account id to be passed as a header
+        required: true
+        schema:
+          type: string
+      - name: site
+        in: query
+        description: Specify the sitecode to filter by
+        schema:
+          type: string
+      - name: location
+        in: query
+        description: Specify the location to filter by
+        schema:
+          type: string
+      - name: reportType
+        in: query
+        description: Specify the reportType to filter by
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: reportName
+        in: query
+        description: Specify the reportName to filter by
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: reportStartDate
+        in: query
+        description: Specify the reportStartDate to filter by
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+          format: date
+      - name: reportEndDate
+        in: query
+        description: Specify the reportEndDate to filter by
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+          format: date
+      - name: size
+        in: query
+        description: The number of items to return
+        schema:
+          maximum: 1000
+          minimum: 1
+          type: integer
+          format: int32
+          default: 25
+      - name: page
+        in: query
+        description: The page number to return
+        schema:
+          minimum: 0
+          type: integer
+          format: int32
+          default: 0
+      requestBody:
+        "$ref": "#/components/requestBodies/reportPost"
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/reportsSchema"
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: client
+                  message: The request could not be understood by the server due to
+                    malformed syntax.
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: client
+                  message: Unauthorized. Access token is missing or invalid.
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: client
+                  message: The server understood the request, but will not fulfill
+                    it.
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: client
+                  message: Resource not found.
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: server
+                  message: Oops. Something went wrong. The server encountered an internal
+                    error or misconfiguration and was unable to complete your request.
+  "/reports/{id}":
+    get:
+      tags:
+      - Reports
+      description: The method can be used to retrieve the details of a report.
+      operationId: reports-load
+      parameters:
+      - name: master-account-id
+        in: header
+        description: Master account id to be passed as a header
+        required: true
+        schema:
+          type: string
+      - name: account-id
+        in: header
+        description: Account id to be passed as a header
+        required: true
+        schema:
+          type: string
+      - name: id
+        in: path
+        description: Specify the identification number
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/reportsDetailsSchema"
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: client
+                  message: The request could not be understood by the server due to
+                    malformed syntax.
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: client
+                  message: Unauthorized. Access token is missing or invalid.
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: client
+                  message: The server understood the request, but will not fulfill
+                    it.
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: client
+                  message: Resource not found.
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: server
+                  message: Oops. Something went wrong. The server encountered an internal
+                    error or misconfiguration and was unable to complete your request.
+  "/reports/{id}/download":
+    get:
+      tags:
+      - Reports
+      description: The method that can be used to download the report.
+      operationId: reports-download
+      parameters:
+      - name: master-account-id
+        in: header
+        description: Master account id to be passed as a header
+        required: true
+        schema:
+          type: string
+      - name: account-id
+        in: header
+        description: Account id to be passed as a header
+        required: true
+        schema:
+          type: string
+      - name: id
+        in: path
+        description: Specify the identification number
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            "*/*":
+              schema:
+                type: array
+                items:
+                  type: string
+                  format: byte
+              example: string($binary)
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: client
+                  message: The request could not be understood by the server due to
+                    malformed syntax.
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: client
+                  message: Unauthorized. Access token is missing or invalid.
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: client
+                  message: The server understood the request, but will not fulfill
+                    it.
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: client
+                  message: Resource not found.
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: server
+                  message: Oops. Something went wrong. The server encountered an internal
+                    error or misconfiguration and was unable to complete your request.
+  "/workorders/request":
+    get:
+      tags:
+      - Workorders
+      description: The method can be used to retrieve CI's that are needed to retrieve
+        workorders.
+      operationId: workorders-request
+      parameters:
+      - name: master-account-id
+        in: header
+        description: Master account id to be passed as a header
+        required: true
+        schema:
+          type: string
+      - name: account-id
+        in: header
+        description: Account id to be passed as a header
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/workorderCiSchema"
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: client
+                  message: The request could not be understood by the server due to
+                    malformed syntax.
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: client
+                  message: Unauthorized. Access token is missing or invalid.
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: client
+                  message: The server understood the request, but will not fulfill
+                    it.
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: client
+                  message: Resource not found.
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: server
+                  message: Oops. Something went wrong. The server encountered an internal
+                    error or misconfiguration and was unable to complete your request.
+  "/workorders":
+    post:
+      tags:
+      - Workorders
+      description: The method can be used to retrieve workorders for one or more CI's
+      operationId: workorders
+      parameters:
+      - name: master-account-id
+        in: header
+        description: Master account id to be passed as a header
+        required: true
+        schema:
+          type: string
+      - name: account-id
+        in: header
+        description: Account id to be passed as a header
+        required: true
+        schema:
+          type: string
+      - name: site
+        in: query
+        description: Specify the sitecode to filter by
+        schema:
+          type: string
+      - name: location
+        in: query
+        description: Specify the location to filter by
+        schema:
+          type: string
+      - name: status
+        in: query
+        description: Specify the status to filter by
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: activityType
+        in: query
+        description: Specify the activityType to filter by
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: shortDescription
+        in: query
+        description: Specify the shortDescription to filter by
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: startDate
+        in: query
+        description: Specify the startDate to filter by
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+          format: date
+      - name: endDate
+        in: query
+        description: Specify the endDate to filter by
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+          format: date
+      - name: size
+        in: query
+        description: The number of items to return
+        schema:
+          maximum: 1000
+          minimum: 1
+          type: integer
+          format: int32
+          default: 25
+      - name: page
+        in: query
+        description: The page number to return
+        schema:
+          minimum: 0
+          type: integer
+          format: int32
+          default: 0
+      requestBody:
+        "$ref": "#/components/requestBodies/workorderPost"
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/workordersSchema"
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: client
+                  message: The request could not be understood by the server due to
+                    malformed syntax.
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: client
+                  message: Unauthorized. Access token is missing or invalid.
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: client
+                  message: The server understood the request, but will not fulfill
+                    it.
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: client
+                  message: Resource not found.
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: server
+                  message: Oops. Something went wrong. The server encountered an internal
+                    error or misconfiguration and was unable to complete your request.
+  "/workorders/{id}":
+    get:
+      tags:
+      - Workorders
+      description: The method that can be used to retrieve the workorders.
+      operationId: workorders-load
+      parameters:
+      - name: master-account-id
+        in: header
+        description: Master account id to be passed as a header
+        required: true
+        schema:
+          type: string
+      - name: account-id
+        in: header
+        description: Account id to be passed as a header
+        required: true
+        schema:
+          type: string
+      - name: id
+        in: path
+        description: Specify the identification number
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/workordersDetailsSchema"
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: client
+                  message: The request could not be understood by the server due to
+                    malformed syntax.
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: client
+                  message: Unauthorized. Access token is missing or invalid.
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: client
+                  message: The server understood the request, but will not fulfill
+                    it.
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: client
+                  message: Resource not found.
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: server
+                  message: Oops. Something went wrong. The server encountered an internal
+                    error or misconfiguration and was unable to complete your request.
+components:
+  schemas:
+    reportsSchema:
+      title: Reports
+      type: object
+      properties:
+        content:
+          type: array
+          items:
+            "$ref": "#/components/schemas/reportsSchema_content"
+        pageable:
+          "$ref": "#/components/schemas/reportsSchema_pageable"
+      example:
+        content:
+        - id: CUS01234567
+          site: DFW010
+          location: Room 01
+          type: Security
+          name: ABC_Company_DFW010_Room_01_Cardholder_Nov_2022.csv
+          executionDate: '2022-12-01 11:42:12'
+          startDate: '2022-11-01 00:00:00'
+          endDate: '2022-12-01 00:00:00'
+        pageable:
+          last: true
+          totalPages: 1
+          totalElements: 1
+          size: 25
+          number: 0
+          first: true
+          numberOfElements: 1
+          empty: false
+    reportsDetailsSchema:
+      title: Reports Details
+      type: object
+      properties:
+        id:
+          type: string
+        site:
+          type: string
+        location:
+          type: string
+        type:
+          type: string
+          enum:
+          - Security
+          - DCIM
+        name:
+          type: string
+        executionDate:
+          type: string
+          format: date
+        startDate:
+          type: string
+          format: date
+        endDate:
+          type: string
+          format: date
+      example:
+        id: CUS01234567
+        site: DFW010
+        location: Room 01
+        type: Security
+        name: ABC_Company_DFW010_Room_01_Cardholder_Nov_2022.csv
+        executionDate: '2022-12-01 11:42:12'
+        startDate: '2022-11-01 00:00:00'
+        endDate: '2022-12-01 00:00:00'
+    reportCiSchema:
+      title: Report CI's
+      type: object
+      properties:
+        ci:
+          type: array
+          items:
+            type: string
+      example:
+        ci:
+        - 8b077e841bb2c5d48b000e55cc4bcb
+        - f64eca711b29c9104c384047bc4bcb
+    workordersSchema:
+      title: Workorders
+      type: object
+      properties:
+        content:
+          type: array
+          items:
+            "$ref": "#/components/schemas/workordersSchema_content"
+        pageable:
+          "$ref": "#/components/schemas/reportsSchema_pageable"
+      example:
+        content:
+        - id: WO1234567
+          shortDescription: 2022 PPM Fire System Monthly Servicing (Nov)
+          site: DFW010
+          location: Room 01
+          startDate: '2022-11-01 00:00:00'
+          endDate: '2022-12-01 00:00:00'
+          status: Scheduled
+          activityType: Fire Systems
+        pageable:
+          last: true
+          totalPages: 1
+          totalElements: 1
+          size: 25
+          number: 0
+          first: true
+          numberOfElements: 1
+          empty: false
+    workordersDetailsSchema:
+      title: Workorders Details
+      type: object
+      properties:
+        id:
+          type: string
+        shortDescription:
+          type: string
+        site:
+          type: string
+        location:
+          type: string
+        startDate:
+          type: string
+          format: date
+        endDate:
+          type: string
+          format: date
+        status:
+          type: string
+          enum:
+          - Completed
+          - Scheduled
+        approvalStatus:
+          type: string
+        activityType":
+          type: string
+        activitySubType:
+          type: string
+        activityCategory:
+          type: string
+        serviceType:
+          type: string
+        riskLevel:
+          type: string
+          enum:
+          - Criticl
+          - High
+          - Low
+        highLevelSummary:
+          type: string
+        methodOfProcedure:
+          type: string
+        attachments:
+          type: string
+      example:
+        id: WO1234567
+        shortDescription: 2022 PPM Fire System Monthly Servicing (Nov)
+        site: DFW010
+        location: Room 01
+        startDate: '2022-11-01 00:00:00'
+        endDate: '2022-12-01 00:00:00'
+        status: Scheduled
+        approvalStatus: Approved
+        activityType: Fire Systems
+        activitySubType: Fire System Panel
+        activityCategory: Facilities Request
+        serviceType: Planned Maintenance
+        riskLevel: High
+        highLevelSummary: Please refer to the attached MOP for details
+        attachments: []
+    workorderCiSchema:
+      title: Workorder CI's
+      type: object
+      properties:
+        completed:
+          type: array
+          items:
+            type: string
+        scheduled:
+          type: array
+          items:
+            type: string
+      example:
+        completed:
+        - fd1814dc1b7ac59471b884415b4bcb
+        - b6077e841bb2c5d48b000e55cc4bcb
+        scheduled:
+        - fd1814dc1b7ac59471b884415b4bcb
+        - b6077e841bb2c5d48b000e55cc4bcb
+    inline_response_400:
+      type: object
+      properties:
+        error:
+          "$ref": "#/components/schemas/inline_response_400_error"
+    reportsSchema_content:
+      properties:
+        id:
+          type: string
+        site:
+          type: string
+        location:
+          type: string
+        type:
+          type: string
+          enum:
+          - Security
+          - DCIM
+        name:
+          type: string
+        executionDate:
+          type: string
+          format: date
+        startDate:
+          type: string
+          format: date
+        endDate:
+          type: string
+          format: date
+    reportsSchema_pageable:
+      properties:
+        last:
+          type: boolean
+        totalPages:
+          type: integer
+          format: int32
+        totalElements:
+          type: integer
+          format: int64
+        size:
+          type: integer
+          format: int32
+        number:
+          type: integer
+          format: int32
+        first:
+          type: boolean
+        numberOfElements:
+          type: integer
+          format: int32
+        empty:
+          type: boolean
+    workordersSchema_content:
+      properties:
+        id:
+          type: string
+        shortDescription:
+          type: string
+        site:
+          type: string
+        location:
+          type: string
+        startDate:
+          type: string
+          format: date
+        endDate:
+          type: string
+          format: date
+        status:
+          type: string
+          enum:
+          - Completed
+          - Scheduled
+        activityType":
+          type: string
+    inline_response_400_error:
+      type: object
+      properties:
+        correlationId:
+          type: string
+        type:
+          type: string
+          enum:
+          - client
+          - server
+        message:
+          type: string
+        details:
+          type: string
+  responses:
+    '400':
+      description: Bad Request
+      content:
+        application/json:
+          schema:
+            "$ref": "#/components/schemas/inline_response_400"
+          example:
+            error:
+              correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+              type: client
+              message: The request could not be understood by the server due to malformed
+                syntax.
+    '401':
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            "$ref": "#/components/schemas/inline_response_400"
+          example:
+            error:
+              correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+              type: client
+              message: Unauthorized. Access token is missing or invalid.
+    '403':
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            "$ref": "#/components/schemas/inline_response_400"
+          example:
+            error:
+              correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+              type: client
+              message: The server understood the request, but will not fulfill it.
+    '404':
+      description: Not Found
+      content:
+        application/json:
+          schema:
+            "$ref": "#/components/schemas/inline_response_400"
+          example:
+            error:
+              correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+              type: client
+              message: Resource not found.
+    '500':
+      description: Internal Server Error
+      content:
+        application/json:
+          schema:
+            "$ref": "#/components/schemas/inline_response_400"
+          example:
+            error:
+              correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+              type: server
+              message: Oops. Something went wrong. The server encountered an internal
+                error or misconfiguration and was unable to complete your request.
+  parameters:
+    categoryParam:
+      name: category
+      in: query
+      description: Specify the category to filter by
+      required: false
+      style: form
+      explode: true
+      schema:
+        type: string
+    reportTypeParam:
+      name: reportType
+      in: query
+      description: Specify the reportType to filter by
+      required: false
+      style: form
+      explode: true
+      schema:
+        type: string
+    reportNameParam:
+      name: reportName
+      in: query
+      description: Specify the reportName to filter by
+      required: false
+      style: form
+      explode: true
+      schema:
+        type: string
+    reportStartDateParam:
+      name: reportStartDate
+      in: query
+      description: Specify the reportStartDate to filter by
+      required: false
+      style: form
+      explode: true
+      schema:
+        type: string
+        format: date
+    reportEndDateParam:
+      name: reportEndDate
+      in: query
+      description: Specify the reportEndDate to filter by
+      required: false
+      style: form
+      explode: true
+      schema:
+        type: string
+        format: date
+    statusParam:
+      name: status
+      in: query
+      description: Specify the status to filter by
+      required: false
+      style: form
+      explode: true
+      schema:
+        type: string
+    activityTypeParam:
+      name: activityType
+      in: query
+      description: Specify the activityType to filter by
+      required: false
+      style: form
+      explode: true
+      schema:
+        type: string
+    shortDescriptionParam:
+      name: shortDescription
+      in: query
+      description: Specify the shortDescription to filter by
+      required: false
+      style: form
+      explode: true
+      schema:
+        type: string
+    startDateParam:
+      name: startDate
+      in: query
+      description: Specify the startDate to filter by
+      required: false
+      style: form
+      explode: true
+      schema:
+        type: string
+        format: date
+    endDateParam:
+      name: endDate
+      in: query
+      description: Specify the endDate to filter by
+      required: false
+      style: form
+      explode: true
+      schema:
+        type: string
+        format: date
+    masterAccountIdParam:
+      name: master-account-id
+      in: header
+      description: Master account id to be passed as a header
+      required: true
+      schema:
+        type: string
+    accountIdParam:
+      name: account-id
+      in: header
+      description: Account id to be passed as a header
+      required: true
+      schema:
+        type: string
+    siteParam:
+      name: site
+      in: query
+      description: Specify the sitecode to filter by
+      schema:
+        type: string
+    locationParam:
+      name: location
+      in: query
+      description: Specify the location to filter by
+      schema:
+        type: string
+    sizeParam:
+      name: size
+      in: query
+      description: The number of items to return
+      schema:
+        maximum: 1000
+        minimum: 1
+        type: integer
+        format: int32
+        default: 25
+    pageParam:
+      name: page
+      in: query
+      description: The page number to return
+      schema:
+        minimum: 0
+        type: integer
+        format: int32
+        default: 0
+    idParam:
+      name: id
+      in: path
+      description: Specify the identification number
+      required: true
+      schema:
+        type: string
+  requestBodies:
+    reportPost:
+      content:
+        application/json:
+          schema:
+            required:
+            - ci
+            type: object
+            properties:
+              ci:
+                type: array
+                items:
+                  type: string
+            example:
+              ci:
+              - 8b077e841bb2c5d48b000e55cc4bcb
+              - f64eca711b29c9104c384047bc4bcb
+    workorderPost:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              completed:
+                type: array
+                items:
+                  type: string
+              scheduled:
+                type: array
+                items:
+                  type: string
+            example:
+              completed:
+              - fd1814dc1b7ac59471b884415b4bcb
+              - b6077e841bb2c5d48b000e55cc4bcb
+              scheduled:
+              - fd1814dc1b7ac59471b884415b4bcb
+              - b6077e841bb2c5d48b000e55cc4bcb
+  securitySchemes:
+    Authorization:
+      type: http
+      description: Get the access token by calling the AccessToken API first. Then
+        provide the access token below as the Authorization header and click Authorize.
+      scheme: bearer
+      bearerFormat: Bearer

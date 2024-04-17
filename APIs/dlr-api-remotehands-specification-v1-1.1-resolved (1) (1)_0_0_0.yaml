@@ -1,0 +1,1172 @@
+---
+openapi: 3.0.0
+info:
+  title: RemoteHandsTickets-v1
+  description: Request Remote Hands technicians to perform work on their equipment
+    at DLR Data Centers.
+  version: 1.0.4
+servers:
+- url: https://playground.digitalrealty.com/v1
+- url: https://sandbox.digitalrealty.com/v1
+- url: https://api.digitalrealty.com/v1
+security:
+- Authorization: []
+tags:
+- name: Remote Hands Tickets
+paths:
+  "/remotehands-tickets":
+    get:
+      tags:
+      - Remote Hands Tickets
+      description: The method can be used to retrieve all remote hands tickets of
+        the customers account.
+      operationId: remote-hands-list
+      parameters:
+      - name: master-account-id
+        in: header
+        description: Master account id to be passed as a header
+        required: true
+        schema:
+          type: string
+      - name: account-id
+        in: header
+        description: Account id to be passed as a header
+        required: true
+        schema:
+          type: string
+      - name: site
+        in: query
+        description: Specify the sitecode to filter by
+        schema:
+          type: string
+      - name: status
+        in: query
+        description: Specify the status to filter by
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+          enum:
+          - New
+          - In Progress
+          - Completed
+          - Cancellation Requested
+          - Cancelled
+      - name: requestType
+        in: query
+        description: Specify the request type to filter by
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+          enum:
+          - Urgent Work
+          - Planned Work
+      - name: category
+        in: query
+        description: Specify the category to filter by
+        schema:
+          type: string
+      - name: createdBy
+        in: query
+        description: Specify the email to filter by
+        schema:
+          type: string
+      - name: size
+        in: query
+        description: The number of items to return
+        schema:
+          maximum: 1000
+          minimum: 1
+          type: integer
+          format: int32
+          default: 25
+      - name: page
+        in: query
+        description: The page number to return
+        schema:
+          minimum: 0
+          type: integer
+          format: int32
+          default: 0
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/RemoteHands"
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: client
+                  message: The request could not be understood by the server due to
+                    malformed syntax.
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: client
+                  message: Unauthorized. Access token is missing or invalid.
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: client
+                  message: The server understood the request, but will not fulfill
+                    it.
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: client
+                  message: Resource not found.
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: server
+                  message: Oops. Something went wrong. The server encountered an internal
+                    error or misconfiguration and was unable to complete your request.
+    post:
+      tags:
+      - Remote Hands Tickets
+      description: The method can be used to post a remote hands request ticket.
+      operationId: remote-hands-create
+      parameters:
+      - name: master-account-id
+        in: header
+        description: Master account id to be passed as a header
+        required: true
+        schema:
+          type: string
+      - name: account-id
+        in: header
+        description: Account id to be passed as a header
+        required: true
+        schema:
+          type: string
+      requestBody:
+        "$ref": "#/components/requestBodies/RemoteHandsPost"
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/RemoteHandsDetailsPost"
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: client
+                  message: The request could not be understood by the server due to
+                    malformed syntax.
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: client
+                  message: Unauthorized. Access token is missing or invalid.
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: client
+                  message: The server understood the request, but will not fulfill
+                    it.
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: client
+                  message: Resource not found.
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: server
+                  message: Oops. Something went wrong. The server encountered an internal
+                    error or misconfiguration and was unable to complete your request.
+  "/remotehands-tickets/{id}":
+    get:
+      tags:
+      - Remote Hands Tickets
+      description: The method can be used to retrieve details of a remote hands ticket.
+      operationId: remote-hands-read
+      parameters:
+      - name: master-account-id
+        in: header
+        description: Master account id to be passed as a header
+        required: true
+        schema:
+          type: string
+      - name: account-id
+        in: header
+        description: Account id to be passed as a header
+        required: true
+        schema:
+          type: string
+      - name: id
+        in: path
+        description: Specify the identification number
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/RemoteHandsDetails"
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: client
+                  message: The request could not be understood by the server due to
+                    malformed syntax.
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: client
+                  message: Unauthorized. Access token is missing or invalid.
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: client
+                  message: The server understood the request, but will not fulfill
+                    it.
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: client
+                  message: Resource not found.
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: server
+                  message: Oops. Something went wrong. The server encountered an internal
+                    error or misconfiguration and was unable to complete your request.
+    put:
+      tags:
+      - Remote Hands Tickets
+      description: The method can be used to update a remote hands ticket.
+      operationId: remote-hands-update
+      parameters:
+      - name: master-account-id
+        in: header
+        description: Master account id to be passed as a header
+        required: true
+        schema:
+          type: string
+      - name: account-id
+        in: header
+        description: Account id to be passed as a header
+        required: true
+        schema:
+          type: string
+      - name: id
+        in: path
+        description: Specify the identification number
+        required: true
+        schema:
+          type: string
+      requestBody:
+        "$ref": "#/components/requestBodies/RemoteHandsUpdate"
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/RemoteHandsDetails"
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: client
+                  message: The request could not be understood by the server due to
+                    malformed syntax.
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: client
+                  message: Unauthorized. Access token is missing or invalid.
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: client
+                  message: The server understood the request, but will not fulfill
+                    it.
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: client
+                  message: Resource not found.
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: server
+                  message: Oops. Something went wrong. The server encountered an internal
+                    error or misconfiguration and was unable to complete your request.
+  "/remotehands-tickets/{id}/cancel":
+    put:
+      tags:
+      - Remote Hands Tickets
+      description: The method can be used to make a request to cancel a remote hands
+        ticket.
+      operationId: remote-hands-cancel
+      parameters:
+      - name: master-account-id
+        in: header
+        description: Master account id to be passed as a header
+        required: true
+        schema:
+          type: string
+      - name: account-id
+        in: header
+        description: Account id to be passed as a header
+        required: true
+        schema:
+          type: string
+      - name: id
+        in: path
+        description: Specify the identification number
+        required: true
+        schema:
+          type: string
+      requestBody:
+        "$ref": "#/components/requestBodies/RemoteHandsCancel"
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_200"
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: client
+                  message: The request could not be understood by the server due to
+                    malformed syntax.
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: client
+                  message: Unauthorized. Access token is missing or invalid.
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: client
+                  message: The server understood the request, but will not fulfill
+                    it.
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: client
+                  message: Resource not found.
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: server
+                  message: Oops. Something went wrong. The server encountered an internal
+                    error or misconfiguration and was unable to complete your request.
+  "/remotehands-tickets/categories":
+    get:
+      tags:
+      - Remote Hands Tickets
+      description: The method can be used to retrieve the available remote hands categories
+        supported by DLR.
+      operationId: remote-hands-categories
+      parameters:
+      - name: master-account-id
+        in: header
+        description: Master account id to be passed as a header
+        required: true
+        schema:
+          type: string
+      - name: account-id
+        in: header
+        description: Account id to be passed as a header
+        required: true
+        schema:
+          type: string
+      - name: requestType
+        in: query
+        description: Specify the request type to filter by
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+          enum:
+          - Urgent Work
+          - Planned Work
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/RemoteHandsCategories"
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: client
+                  message: The request could not be understood by the server due to
+                    malformed syntax.
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: client
+                  message: Unauthorized. Access token is missing or invalid.
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: client
+                  message: The server understood the request, but will not fulfill
+                    it.
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: client
+                  message: Resource not found.
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: server
+                  message: Oops. Something went wrong. The server encountered an internal
+                    error or misconfiguration and was unable to complete your request.
+components:
+  schemas:
+    RemoteHands:
+      title: Remote Hands
+      type: object
+      properties:
+        content:
+          type: array
+          items:
+            "$ref": "#/components/schemas/RemoteHands_content"
+        pageable:
+          "$ref": "#/components/schemas/RemoteHands_pageable"
+
+    RemoteHandsDetailsPost:
+      title: Remote Hands Details
+      type: object
+      properties:
+        id:
+          type: string
+          example: "WO9333576"
+        title:
+          type: string
+          example: "Test Connect Cisco Server"
+        status:
+          type: string
+          enum:
+          - New
+          - In Progress
+          - Completed
+          - Cancellation Requested
+          - Cancelled
+        site:
+          type: string
+          example: "IAD024"
+        location:
+          type: string
+          example: "Starbucks Cage F150-B"
+        requestType:
+          type: string
+          enum:
+          - Planned Work
+          - Urgent Work
+          example: "Planned Work"
+        category:
+          type: string
+          example: "Existing cross connect or connectivity testing"
+        detailedInstruction:
+          type: string
+          example: "Please test the connection of the Cisco server"
+        customerReference:
+          type: string
+          example: "REF01234"
+        referenceTicket:
+          type: string
+          example: "WO1234566"
+        cancelReason:
+          type: string
+          enum:
+          - Duplicate request
+          - Request entered in error
+          - Request no longer needed
+        createdOn:
+          type: string
+          format: date-time
+          example: "2023-08-08 08:24:44"
+        updatedOn:
+          type: string
+          format: date-time
+          example: "2023-08-08 08:24:44"
+        closedOn:
+          type: string
+          format: date-time
+          example: "2023-08-08 08:24:44"
+        createdBy:
+          type: string
+          example:  "fsl_test Testing"
+        ticketType:
+          type: string
+          example: "Remote Hands"
+        notificationRecipients:
+          type: string
+          example: "jane_doe@email.com, jake_doe@email.com"
+
+
+    RemoteHandsDetails:
+      title: Remote Hands Details
+      type: object
+      properties:
+        id:
+          type: string
+          example: "WO9333576"
+        title:
+          type: string
+          example: "Test Connect Cisco Server"
+        status:
+          type: string
+          enum:
+          - New
+          - In Progress
+          - Completed
+          - Cancellation Requested
+          - Cancelled
+        site:
+          type: string
+          example: "IAD024"
+        location:
+          type: string
+          example: "Starbucks Cage F150-B"
+        requestType:
+          type: string
+          enum:
+          - Planned Work
+          - Urgent Work
+          example: "Planned Work"
+        category:
+          type: string
+          example: "Existing cross connect or connectivity testing"
+        detailedInstruction:
+          type: string
+          example: "Please test the connection of the Cisco server"
+        customerReference:
+          type: string
+          example: "REF01234"
+        referenceTicket:
+          type: string
+          example: "WO1234566"
+        cancelReason:
+          type: string
+          enum:
+          - Duplicate request
+          - Request entered in error
+          - Request no longer needed
+        createdOn:
+          type: string
+          format: date-time
+          example: "2023-08-08 08:24:44"
+        updatedOn:
+          type: string
+          format: date-time
+          example: "2023-08-08 08:24:44"
+        closedOn:
+          type: string
+          format: date-time
+          example: "2023-08-08 08:24:44"
+        createdBy:
+          type: string
+          example:  "fsl_test Testing"
+        ticketType:
+          type: string
+          example: "Remote Hands"
+        notificationRecipients:
+          type: string
+          example: "jane_doe@email.com, jake_doe@email.com"
+        comments:
+          type: array
+          items:
+            "$ref": "#/components/schemas/RemoteHandsDetails_comments"
+          example: []  
+
+
+    RemoteHandsCategories:
+      title: Remote Hands Categories
+      type: object
+      properties:
+        result:
+          type: array
+          items:
+            "$ref": "#/components/schemas/RemoteHandsCategories_result"
+      example:
+        result:
+        - requestType:
+            name: Planned Work
+            categories:
+            - name: "Existing cross connect or connectivity testing"
+            - name: "Customer premise cabling"
+            - name: "Tape swaps"
+            - name: "Equipment installation"
+            - name: "Equipment de-installation"
+            - name: "Dedicated escort"
+            - name: "Auditing"
+            - name: "Other"
+        - requestType:
+            name: Urgent Work
+            categories:
+            - name: "Existing cross connect or connectivity testing"
+            - name: "KVM (keyboard, video, mouse) assistance"
+            - name: "Equipment troubleshoot or replacement"
+            - name: "Power cycle or reboot"
+            - name: "Other"
+    inline_response_400:
+      type: object
+      properties:
+        error:
+          "$ref": "#/components/schemas/inline_response_400_error"
+    inline_response_200:
+      type: object
+      properties:
+        message:
+          type: string
+          example:  "We have received your request for cancellation of workorder 'WO9342535'. We will be in contact shortly. Please be aware that fees might still apply to this request if work has already started."
+
+    RemoteHands_content:
+      properties:
+        id:
+          type: string
+          example: WO9333385
+        title:
+          type: string
+          example: "title sample1"
+        status:
+          type: string
+          enum:
+          - New
+          - In Progress
+          - Completed
+          - Cancellation Requested
+          - Cancelled
+          
+        site:
+          type: string
+          example: "PHX015"
+        location:
+          type: string
+          example: "COLO 8 Starbucks Cage 8.04"
+        category:
+          type: string
+          example: "Existing cross connect or connectivity testing"
+        requestType:
+          type: string
+          enum:
+          - Planned Work
+          - Urgent Work
+        createdOn:
+          type: string
+          format: date-time
+          example: "2023-08-07 16:09:22"
+        updatedOn:
+          type: string
+          format: date-time
+          example: "2023-08-07 16:09:22"
+        closedOn:
+          type: string
+          format: date-time
+          example: "2023-08-07 16:09:22"
+        createdBy:
+          type: string
+          example:  "Michael test"
+    RemoteHands_pageable:
+      properties:
+        last:
+          type: boolean
+          example: false
+        totalPages:
+          type: integer
+          format: int32
+          example: 433
+        totalElements:
+          type: integer
+          format: int64
+          example: 10818
+          
+        size:
+          type: integer
+          format: int32
+          example: 25
+        number:
+          type: integer
+          format: int32
+          example: 0
+        numberOfElements:
+          type: integer
+          format: int32
+          example: 25
+        first:
+          type: boolean
+          example: true
+        empty:
+          type: boolean
+          example: false
+    RemoteHandsDetails_comments:
+      properties:
+        comment:
+          type: string
+        commentedBy:
+          type: string
+        commentedOn:
+          type: string
+          format: date-time
+          
+          
+    RemoteHandsCategories_requestType_categories:
+      properties:
+        name:
+          type: string
+    RemoteHandsCategories_requestType:
+      type: object
+      properties:
+        name:
+          type: string
+        categories:
+          type: array
+          items:
+            "$ref": "#/components/schemas/RemoteHandsCategories_requestType_categories"
+    RemoteHandsCategories_result:
+      properties:
+        requestType:
+          "$ref": "#/components/schemas/RemoteHandsCategories_requestType"
+    inline_response_400_error:
+      type: object
+      properties:
+        correlationId:
+          type: string
+        type:
+          type: string
+          enum:
+          - client
+          - server
+        message:
+          type: string
+        details:
+          type: string
+  responses:
+    '400':
+      description: Bad Request
+      content:
+        application/json:
+          schema:
+            "$ref": "#/components/schemas/inline_response_400"
+          example:
+            error:
+              correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+              type: client
+              message: The request could not be understood by the server due to malformed
+                syntax.
+    '401':
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            "$ref": "#/components/schemas/inline_response_400"
+          example:
+            error:
+              correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+              type: client
+              message: Unauthorized. Access token is missing or invalid.
+    '403':
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            "$ref": "#/components/schemas/inline_response_400"
+          example:
+            error:
+              correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+              type: client
+              message: The server understood the request, but will not fulfill it.
+    '404':
+      description: Not Found
+      content:
+        application/json:
+          schema:
+            "$ref": "#/components/schemas/inline_response_400"
+          example:
+            error:
+              correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+              type: client
+              message: Resource not found.
+    '500':
+      description: Internal Server Error
+      content:
+        application/json:
+          schema:
+            "$ref": "#/components/schemas/inline_response_400"
+          example:
+            error:
+              correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+              type: server
+              message: Oops. Something went wrong. The server encountered an internal
+                error or misconfiguration and was unable to complete your request.
+  parameters:
+    requestTypeParam:
+      name: requestType
+      in: query
+      description: Specify the request type to filter by
+      required: false
+      style: form
+      explode: true
+      schema:
+        type: string
+        enum:
+        - Urgent Work
+        - Planned Work
+    statusParam:
+      name: status
+      in: query
+      description: Specify the status to filter by
+      required: false
+      style: form
+      explode: true
+      schema:
+        type: string
+        enum:
+        - New
+        - In Progress
+        - Completed
+        - Cancellation Requested
+        - Cancelled
+    masterAccountIdParam:
+      name: master-account-id
+      in: header
+      description: Master account id to be passed as a header
+      required: true
+      schema:
+        type: string
+    accountIdParam:
+      name: account-id
+      in: header
+      description: Account id to be passed as a header
+      required: true
+      schema:
+        type: string
+    siteParam:
+      name: site
+      in: query
+      description: Specify the sitecode to filter by
+      schema:
+        type: string
+    categoryParam:
+      name: category
+      in: query
+      description: Specify the category to filter by
+      schema:
+        type: string
+    createdbyParam:
+      name: createdBy
+      in: query
+      description: Specify the email to filter by
+      schema:
+        type: string
+    sizeParam:
+      name: size
+      in: query
+      description: The number of items to return
+      schema:
+        maximum: 1000
+        minimum: 1
+        type: integer
+        format: int32
+        default: 25
+    pageParam:
+      name: page
+      in: query
+      description: The page number to return
+      schema:
+        minimum: 0
+        type: integer
+        format: int32
+        default: 0
+    idParam:
+      name: id
+      in: path
+      description: Specify the identification number
+      required: true
+      schema:
+        type: string
+  requestBodies:
+    RemoteHandsPost:
+      content:
+        application/json:
+          schema:
+            required:
+            - category
+            - requestType
+            - site
+            - title
+            type: object
+            properties:
+              title:
+                type: string
+                example: "Test Connect Cisco Server"
+              site:
+                type: string
+                example: "IAD024"
+              location:
+                type: string
+                example: "Starbucks Cage F150-B"
+              requestType:
+                type: string
+                enum:
+                - Planned Work
+                - Urgent Work
+                example: "Planned Work"
+              category:
+                type: string
+                example: "Existing cross connect or connectivity testing"
+              detailedInstruction:
+                type: string
+                example: "Please test the connection of the Cisco server"
+              customerReference:
+                type: string
+                example: "REF01234"
+              referenceTicket:
+                type: string
+                example: "WO1234566"
+              notificationRecipients:
+                type: string
+                example: "jane_doe@email.com,jake_doe@email.com"
+
+      required: true
+    RemoteHandsUpdate:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              customerReference:
+                type: string
+                example: REF05678
+              notificationRecipients:
+                type: string
+                example: ''
+
+      required: true
+    RemoteHandsComment:
+      content:
+        application/json:
+          schema:
+            required:
+            - comment
+            type: object
+            properties:
+              comment:
+                type: string
+            example:
+              comment: Added schreenshot as an attachment
+      required: true
+    RemoteHandsCancel:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              cancelReason:
+                type: string
+                default: Request no longer needed
+                enum:
+                - Duplicate request
+                - Request entered in error
+                - Request no longer needed
+                example: "Request no longer needed"
+
+      required: true
+  securitySchemes:
+    Authorization:
+      type: http
+      description: Get the access token by calling the AccessToken API first. Then
+        provide the access token below as the Authorization header and click Authorize.
+      scheme: bearer
+      bearerFormat: Bearer

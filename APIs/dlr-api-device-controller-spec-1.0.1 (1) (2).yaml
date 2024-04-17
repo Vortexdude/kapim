@@ -1,0 +1,70 @@
+---
+openapi: 3.0.1
+info:
+  title: Device-Controller-v1
+  description: This Device Controller API allow customers to get the dcim-device meta-data information.
+  version: 1.0.1
+servers:
+- url: https://playground.digitalrealty.com/v1
+- url: https://sandbox.digitalrealty.com/v1
+- url: https://api.digitalrealty.com/v1
+security:
+- Authorization: []
+paths:
+  "/dcim-devices/{locationId}/chart-metadata":
+    get:
+      tags:
+      - Device Controller
+      operationId: getChartMetadataForAsset
+      parameters:
+      - name: locationId
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  "$ref": "#/components/schemas/TrendCategory"
+
+
+components:
+  schemas:
+    TrendCategory:
+      type: object
+      properties:
+        TDCID:
+          type: string
+          example: 24
+        SubCategory:
+          type: string
+          example: PDU
+        DefaultFunctionAliasName:
+          type: string
+          example: kWTtl
+        DeviceFunctions:
+          type: array
+          items:
+            type: string
+            example: AmpC,kWTtl,AmpB,AmpA,kVATtl 
+        DisplayOrder:
+          type: integer
+          format: int64
+          example: 47
+        TrendValueType:
+          type: string
+          example: AVG
+          
+          
+  securitySchemes:
+    Authorization:
+      type: http
+      description: Get the access token by calling the AccessToken API first. Then
+        provide the access token below as the Authorization header and click Authorize.
+      scheme: bearer
+      bearerFormat: Bearer

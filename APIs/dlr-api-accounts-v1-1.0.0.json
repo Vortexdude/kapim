@@ -1,0 +1,178 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Accounts-v1",
+    "description": "The Accounts API  retrieves unique identifiers  for the accounts (parent and subsidiary) of the customer.",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://playground.digitalrealty.com/v1"
+    },
+    {
+      "url": "https://sandbox.digitalrealty.com/v1"
+    },
+    {
+      "url": "https://api.digitalrealty.com/v1"
+    }
+  ],
+  "security": [
+    {
+      "Authorization": []
+    }
+  ],
+  "paths": {
+    "/accounts": {
+      "get": {
+        "tags": [
+          "Accounts"
+        ],
+        "description": "The method can be used to retrieve account identifiers of the customer.",
+        "operationId": "accounts",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/defaultAccountParam"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Accounts"
+                }
+              }
+            }
+          },
+          "401": {
+            "$ref": "#/components/responses/401"
+          },
+          "500": {
+            "$ref": "#/components/responses/500"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Accounts": {
+        "title": "Accounts",
+        "type": "object",
+        "properties": {
+          "masterAccountId": {
+            "type": "string"
+          },
+          "masterAccountName": {
+            "type": "string"
+          },
+          "accountId": {
+            "type": "string"
+          },
+          "accountName": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "Active",
+              "Suspended"
+            ]
+          }
+        },
+        "example": [
+          {
+            "masterAccountId": "100123",
+            "masterAccountName:": "ABC Holding Company",
+            "accountId": "0011A00001AaAB1ABC",
+            "accountName": "ABC Company",
+            "status": "Active"
+          }
+        ]
+      },
+      "Error": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "properties": {
+              "correlationId": {
+                "type": "string"
+              },
+              "type": {
+                "type": "string",
+                "enum": [
+                  "client",
+                  "server"
+                ]
+              },
+              "message": {
+                "type": "string"
+              },
+              "details": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      }
+    },
+    "responses": {
+      "401": {
+        "description": "Unauthorized",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            },
+            "example": {
+              "error": {
+                "correlationId": "96b29015-622e-433a-8437-681c6b24d9f1",
+                "type": "client",
+                "message": "Unauthorized. Access token is missing or invalid."
+              }
+            }
+          }
+        }
+      },
+      "500": {
+        "description": "Internal Server Error",
+        "content": {
+          "application/json": {
+            "schema": {
+              "$ref": "#/components/schemas/Error"
+            },
+            "example": {
+              "error": {
+                "correlationId": "96b29015-622e-433a-8437-681c6b24d9f1",
+                "type": "server",
+                "message": "Oops. Something went wrong. The server encountered an internal error or misconfiguration and was unable to complete your request."
+              }
+            }
+          }
+        }
+      }
+    },
+    "parameters": {
+      "defaultAccountParam": {
+        "name": "defaultAccount",
+        "in": "query",
+        "description": "Retrieve your default account",
+        "required": false,
+        "style": "form",
+        "explode": true,
+        "schema": {
+          "type": "boolean"
+        }
+      }
+    },
+    "securitySchemes": {
+      "Authorization": {
+        "type": "http",
+        "description": "Get the access token by calling the AccessToken API first. Then provide the access token below as the Authorization header and click Authorize.",
+        "scheme": "bearer",
+        "bearerFormat": "Bearer"
+      }
+    }
+  }
+}

@@ -1,0 +1,2539 @@
+---
+openapi: 3.0.1
+info:
+  title: FacilityAccess-v1
+  description: This Facility Access API allow customers to request badges and visitor
+    access for on-site visits for customers and temporary vendor visits for any DLR
+    data center site.
+  version: 1.0.8
+servers:
+- url: https://playground.digitalrealty.com/v1
+- url: https://sandbox.digitalrealty.com/v1
+- url: https://api.digitalrealty.com/v1
+security:
+- Authorization: []
+paths:
+  "/facility-access/visitors":
+    get:
+      tags:
+      - Visitors
+      operationId: getVisitorTicketWithFilter
+      description: The method can be used to retrieve all vistor access requests of the customers account.
+      parameters:
+      - name: master-account-id
+        in: header
+        description: Master account id to be passed as a header
+        required: true
+        schema:
+          type: string
+      - name: account-id
+        in: header
+        description: Account id to be passed as a header
+        required: true
+        schema:
+          type: string      
+      - name: id
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: site
+        in: query
+        required: false
+        schema:
+          maxLength: 6
+          minLength: 6
+          type: string
+      - name: status
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: createdBy
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: size
+        in: query
+        required: false
+        schema:
+          maximum: 1000
+          minimum: 1
+          type: integer
+          format: int32
+          default: 25
+      - name: page
+        in: query
+        required: false
+        schema:
+          minimum: 0
+          type: integer
+          format: int32
+          default: 0
+      - name: contactEmail
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: sort
+        in: query
+        required: false
+        schema:
+          type: string
+          default: updatedOn,DESC
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/vistorTickets"
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: client
+                  message: The request could not be understood by the server due to
+                    malformed syntax.
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: client
+                  message: Unauthorized. Access token is missing or invalid.
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: client
+                  message: The server understood the request, but will not fulfill
+                    it.
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: client
+                  message: Resource not found.
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: server
+                  message: Oops. Something went wrong. The server encountered an internal
+                    error or misconfiguration and was unable to complete your request.                  
+  "/facility-access/visitors/access-requests":
+    post:
+      tags:
+      - Visitors
+      operationId: createVisitorsAccess
+      description: The method can be used to request facility access for visitors.
+      parameters:
+      - name: master-account-id
+        in: header
+        description: Master account id to be passed as a header
+        required: true
+        schema:
+          type: string
+      - name: account-id
+        in: header
+        description: Account id to be passed as a header
+        required: true
+        schema:
+          type: string      
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                "$ref": "#/components/schemas/CreateVisitorsAccessRequest"
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/CreateVisitorsAccessResponse"
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: client
+                  message: The request could not be understood by the server due to
+                    malformed syntax.
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: client
+                  message: Unauthorized. Access token is missing or invalid.
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: client
+                  message: The server understood the request, but will not fulfill
+                    it.
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: client
+                  message: Resource not found.
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: server
+                  message: Oops. Something went wrong. The server encountered an internal
+                    error or misconfiguration and was unable to complete your request.
+
+
+
+                
+  "/facility-access/perm-badges":
+    get:
+      tags:
+      - Permanent Badge
+      operationId: getPermBadgesTicketWithFilter
+      description: The method can be used to retrieve all permanent badge requests of the customers account.
+      parameters:
+      - name: master-account-id
+        in: header
+        description: Master account id to be passed as a header
+        required: true
+        schema:
+          type: string
+      - name: account-id
+        in: header
+        description: Account id to be passed as a header
+        required: true
+        schema:
+          type: string      
+      - name: id
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: site
+        in: query
+        required: false
+        schema:
+          maxLength: 6
+          minLength: 6
+          type: string
+      - name: status
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: createdBy
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: size
+        in: query
+        required: false
+        schema:
+          maximum: 1000
+          minimum: 1
+          type: integer
+          format: int32
+          default: 25
+      - name: page
+        in: query
+        required: false
+        schema:
+          minimum: 0
+          type: integer
+          format: int32
+          default: 0
+      - name: contactEmail
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: sort
+        in: query
+        required: false
+        schema:
+          type: string
+          default: updatedOn,DESC
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/badgeTickets"
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: client
+                  message: The request could not be understood by the server due to
+                    malformed syntax.
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: client
+                  message: Unauthorized. Access token is missing or invalid.
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: client
+                  message: The server understood the request, but will not fulfill
+                    it.
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: client
+                  message: Resource not found.
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: server
+                  message: Oops. Something went wrong. The server encountered an internal
+                    error or misconfiguration and was unable to complete your request.                
+    post:
+      tags:
+      - Permanent Badge
+      operationId: createPermBadges
+      description: The method can be used to request a permanent badge for facility access.
+      parameters:
+      - name: master-account-id
+        in: header
+        description: Master account id to be passed as a header
+        required: true
+        schema:
+          type: string
+      - name: account-id
+        in: header
+        description: Account id to be passed as a header
+        required: true
+        schema:
+          type: string      
+      requestBody:
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/CreatePermBadgeRequest"
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/CreatePermBadgeResponse"
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: client
+                  message: The request could not be understood by the server due to
+                    malformed syntax.
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: client
+                  message: Unauthorized. Access token is missing or invalid.
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: client
+                  message: The server understood the request, but will not fulfill
+                    it.
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: client
+                  message: Resource not found.
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: server
+                  message: Oops. Something went wrong. The server encountered an internal
+                    error or misconfiguration and was unable to complete your request.  
+  "/facility-access/perm-badges/modify":
+    put:
+      tags:
+      - Permanent Badge
+      operationId: modifyPermBadge
+      description: The method can be used to update a permanent badge for facility access.
+      parameters:
+      - name: master-account-id
+        in: header
+        description: Master account id to be passed as a header
+        required: true
+        schema:
+          type: string
+      - name: account-id
+        in: header
+        description: Account id to be passed as a header
+        required: true
+        schema:
+          type: string      
+      requestBody:
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/ModifyPermBadgeRequest"
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ModifyPermBadgeResponse"
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: client
+                  message: The request could not be understood by the server due to
+                    malformed syntax.
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: client
+                  message: Unauthorized. Access token is missing or invalid.
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: client
+                  message: The server understood the request, but will not fulfill
+                    it.
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: client
+                  message: Resource not found.
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: server
+                  message: Oops. Something went wrong. The server encountered an internal
+                    error or misconfiguration and was unable to complete your request.  
+  "/facility-access/perm-badges/terminate":
+    put:
+      tags:
+      - Permanent Badge
+      operationId: terminatePermBadge
+      description: The method can be used to terminate a permanent badge for facility access.
+      parameters:
+      - name: master-account-id
+        in: header
+        description: Master account id to be passed as a header
+        required: true
+        schema:
+          type: string
+      - name: account-id
+        in: header
+        description: Account id to be passed as a header
+        required: true
+        schema:
+          type: string      
+      requestBody:
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/TerminatePermBadgesRequest"
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/TerminatePermBadgesResponse"
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: client
+                  message: The request could not be understood by the server due to
+                    malformed syntax.
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: client
+                  message: Unauthorized. Access token is missing or invalid.
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: client
+                  message: The server understood the request, but will not fulfill
+                    it.
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: client
+                  message: Resource not found.
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: server
+                  message: Oops. Something went wrong. The server encountered an internal
+                    error or misconfiguration and was unable to complete your request.                
+  "/facility-access/pop-poes/access-requests":
+    get:
+      tags:
+      - PoP Room Access
+      operationId: getPopRoomTicketWithFilter
+      description: The method can be used to retrieve all PoP/POE room access requests of the customers account.
+      parameters:
+      - name: master-account-id
+        in: header
+        description: Master account id to be passed as a header
+        required: true
+        schema:
+          type: string
+      - name: account-id
+        in: header
+        description: Account id to be passed as a header
+        required: true
+        schema:
+          type: string      
+      - name: id
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: site
+        in: query
+        required: false
+        schema:
+          maxLength: 6
+          minLength: 6
+          type: string
+      - name: status
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: createdBy
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: size
+        in: query
+        required: false
+        schema:
+          maximum: 1000
+          minimum: 1
+          type: integer
+          format: int32
+          default: 25
+      - name: page
+        in: query
+        required: false
+        schema:
+          minimum: 0
+          type: integer
+          format: int32
+          default: 0
+      - name: contactEmail
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: sort
+        in: query
+        required: false
+        schema:
+          type: string
+          default: updatedOn,DESC
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/popTickets"
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: client
+                  message: The request could not be understood by the server due to
+                    malformed syntax.
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: client
+                  message: Unauthorized. Access token is missing or invalid.
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: client
+                  message: The server understood the request, but will not fulfill
+                    it.
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: client
+                  message: Resource not found.
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: server
+                  message: Oops. Something went wrong. The server encountered an internal
+                    error or misconfiguration and was unable to complete your request.                
+    post:
+      tags:
+      - PoP Room Access
+      operationId: createPopRoomRequest
+      description: The method can be used to request PoP/POE room access.
+      parameters:
+      - name: master-account-id
+        in: header
+        description: Master account id to be passed as a header
+        required: true
+        schema:
+          type: string
+      - name: account-id
+        in: header
+        description: Account id to be passed as a header
+        required: true
+        schema:
+          type: string      
+      requestBody:
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/CreatePopRoomRequest"
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/CreatePopRoomResponse"
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: client
+                  message: The request could not be understood by the server due to
+                    malformed syntax.
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: client
+                  message: Unauthorized. Access token is missing or invalid.
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: client
+                  message: The server understood the request, but will not fulfill
+                    it.
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: client
+                  message: Resource not found.
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: server
+                  message: Oops. Something went wrong. The server encountered an internal
+                    error or misconfiguration and was unable to complete your request.
+  "/facility-access/pop-poes/locations":
+    get:
+      tags:
+      - PoP Room Access
+      operationId: getPopRoomLocations
+      description: The method can be used to retrieve all PoP/POE room access requests of the customers account.
+      parameters:
+      - name: master-account-id
+        in: header
+        description: Master account id to be passed as a header
+        required: true
+        schema:
+          type: string
+      - name: account-id
+        in: header
+        description: Account id to be passed as a header
+        required: true
+        schema:
+          type: string      
+      - name: site
+        in: query
+        description: Site has to be passed as a query parameter as a filter
+        required: true
+        schema:
+          type: string
+
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/popTicketsLocations"
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: client
+                  message: The request could not be understood by the server due to
+                    malformed syntax.
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: client
+                  message: Unauthorized. Access token is missing or invalid.
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: client
+                  message: The server understood the request, but will not fulfill
+                    it.
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: client
+                  message: Resource not found.
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: server
+                  message: Oops. Something went wrong. The server encountered an internal
+                    error or misconfiguration and was unable to complete your request.                
+ 
+  "/facility-access/osps/access-requests":
+    get:
+      tags:
+      - OSP Access
+      operationId: getAccessDetails
+      description: The method can be used to retrieve details of a OSP access request.
+      parameters:
+      - name: master-account-id
+        in: header
+        description: Master account id to be passed as a header
+        required: true
+        schema:
+          type: string
+      - name: account-id
+        in: header
+        description: Account id to be passed as a header
+        required: true
+        schema:
+          type: string      
+
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ospTickets"
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: client
+                  message: The request could not be understood by the server due to
+                    malformed syntax.
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: client
+                  message: Unauthorized. Access token is missing or invalid.
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: client
+                  message: The server understood the request, but will not fulfill
+                    it.
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: client
+                  message: Resource not found.
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: server
+                  message: Oops. Something went wrong. The server encountered an internal
+                    error or misconfiguration and was unable to complete your request.   
+
+    post:
+      tags:
+      - OSP Access
+      operationId: createOspRoomRequest
+      description: The method can be used to request PoP/POE room access.
+      parameters:
+      - name: master-account-id
+        in: header
+        description: Master account id to be passed as a header
+        required: true
+        schema:
+          type: string
+      - name: account-id
+        in: header
+        description: Account id to be passed as a header
+        required: true
+        schema:
+          type: string      
+      requestBody:
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/CreateOspRoomRequest"
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/CreatePopRoomResponse"
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: client
+                  message: The request could not be understood by the server due to
+                    malformed syntax.
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: client
+                  message: Unauthorized. Access token is missing or invalid.
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: client
+                  message: The server understood the request, but will not fulfill
+                    it.
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: client
+                  message: Resource not found.
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: server
+                  message: Oops. Something went wrong. The server encountered an internal
+                    error or misconfiguration and was unable to complete your request.
+
+
+  
+  
+  "/facility-access/access-tickets/{ticketId}":
+    get:
+      tags:
+      - Access Ticket
+      operationId: getTicketDetails
+      description: The method can be used to retrieve details of a facility access request.
+      parameters:
+      - name: ticketId
+        in: path
+        required: true
+        schema:
+          type: string
+          
+      - name: master-account-id
+        in: header
+        description: Master account id to be passed as a header
+        required: true
+        schema:
+          type: string
+      - name: account-id
+        in: header
+        description: Account id to be passed as a header
+        required: true
+        schema:
+          type: string      
+
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/GetTicketDetailsResponse"
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: client
+                  message: The request could not be understood by the server due to
+                    malformed syntax.
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: client
+                  message: Unauthorized. Access token is missing or invalid.
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: client
+                  message: The server understood the request, but will not fulfill
+                    it.
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: client
+                  message: Resource not found.
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: server
+                  message: Oops. Something went wrong. The server encountered an internal
+                    error or misconfiguration and was unable to complete your request.   
+
+
+  "/facility-access/access-tickets/{workOrderId}":
+    put:
+      tags:
+      - Access Ticket
+      operationId: updateTicket
+      description: The method can be used to update a facility access request.
+      parameters:
+      - name: master-account-id
+        in: header
+        description: Master account id to be passed as a header
+        required: true
+        schema:
+          type: string
+      - name: account-id
+        in: header
+        description: Account id to be passed as a header
+        required: true
+        schema:
+          type: string      
+      - name: workOrderId
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/EditFacilityAccessRequest"
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/EditTicketResponse"
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: client
+                  message: The request could not be understood by the server due to
+                    malformed syntax.
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: client
+                  message: Unauthorized. Access token is missing or invalid.
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: client
+                  message: The server understood the request, but will not fulfill
+                    it.
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: client
+                  message: Resource not found.
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: server
+                  message: Oops. Something went wrong. The server encountered an internal
+                    error or misconfiguration and was unable to complete your request. 
+                
+             
+
+  "/facility-access/access-tickets/{workOrderId}/cancel":
+    put:
+      tags:
+      - Access Ticket
+      operationId: cancelTicket
+      description: The method can be used to cancel a facility access request.
+      parameters:
+      - name: master-account-id
+        in: header
+        description: Master account id to be passed as a header
+        required: true
+        schema:
+          type: string
+      - name: account-id
+        in: header
+        description: Account id to be passed as a header
+        required: true
+        schema:
+          type: string      
+      - name: workOrderId
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/CancelFacilityAccessRequest"
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            "*/*":
+              schema:
+                "$ref": "#/components/schemas/CancelFacilityAccesResponse"
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: client
+                  message: The request could not be understood by the server due to
+                    malformed syntax.
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: client
+                  message: Unauthorized. Access token is missing or invalid.
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: client
+                  message: The server understood the request, but will not fulfill
+                    it.
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: client
+                  message: Resource not found.
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: server
+                  message: Oops. Something went wrong. The server encountered an internal
+                    error or misconfiguration and was unable to complete your request.                
+
+
+
+              
+  
+components:
+  schemas:
+    Location:
+      required:
+      - accessEndDate
+      - accessStartDate
+      - location
+      type: object
+      properties:
+        location:
+          type: string
+          example: "ABC Cage F150-B"
+
+
+    Site:
+      required:
+      - locations
+      - site
+      type: object
+      properties:
+        site:
+          maxLength: 6
+          minLength: 6
+          type: string
+          example: "IAD024"
+        locations:
+          type: array
+          items:
+            "$ref": "#/components/schemas/Location"
+    Visitor:
+      required:
+      - visitorEmail
+      - visitorFirstName
+      - visitorLastName
+      type: object
+      properties:
+        visitorFirstName:
+          type: string
+          example: Jake
+        visitorLastName:
+          type: string
+          example: Doe
+        visitorEmail:
+          type: string
+          description: Identifies the legal email.
+          example: jake_doe@email.com
+        visitorPhone:
+          type: string
+          example: 1234567890
+
+    WorkOrder:
+      type: object
+      properties:
+        workOrderId:
+          type: string
+          example: WO09359635
+
+
+
+    CreateVisitorsAccessRequest:
+      required:
+      - company
+      - sites
+      - visitorBadgeEndDate
+      - visitorBadgeStartDate
+      - visitorHostCompany
+      - visitorHostFirstName
+      - visitorHostLastName
+      - visitorType
+      - visitors
+      type: object
+      properties:
+        visitors:
+          type: array
+          items:
+            "$ref": "#/components/schemas/Visitor"
+        sites:
+          type: array
+          items:
+            "$ref": "#/components/schemas/Site"
+        visitorType:
+          type: boolean
+          example: true
+        escortFirstName:
+          type: string
+          example: "Jane"
+        escortLastName:
+          type: string
+          example: "Doe"
+        visitorHostFirstName:
+          type: string
+          example: "John"
+        visitorHostLastName:
+          type: string
+          example: "Doe"
+        visitorHostCompany:
+          type: string
+          example: "ABC Company"
+        visitorBadgeStartDate:
+          type: string
+          format: date
+          description: yyyy-MM-dd
+          example: "2023-06-07"
+        visitorBadgeEndDate:
+          type: string
+          format: date
+          description: yyyy-MM-dd
+          example: "2023-06-07"
+        company:
+          type: string
+          example: "DEF Company"
+        emailNotifications:
+          type: string
+          description: Identifies the legal email.
+          example: "jane_doe@email.com,test@email.com"
+        notes:
+          type: string
+          example: "Datacenter Tour"            
+        isExtendedVisitorBadge:
+          type: boolean
+          example: false
+        isBulkRequest:
+          type: boolean
+          example: false
+    CreateVisitorsAccessResponse:
+      type: object
+      properties:
+        workOrder:
+          type: array
+          items:
+            "$ref": "#/components/schemas/WorkOrder"
+    CreatePopRoomRequest:
+      required:
+      - escortFirstName
+      - escortLastName
+      - sites
+      - visitorHostCompany
+      - visitorHostFirstName
+      - visitorHostLastName
+      - visitorType
+      - visitors
+      type: object
+      properties:
+        visitors:
+          type: array
+          items:
+            "$ref": "#/components/schemas/VisitorForPOPOSP"
+        sites:
+          type: array
+          items:
+            "$ref": "#/components/schemas/PopOspSite"            
+        visitorType:
+          type: boolean
+          example: true
+        escortFirstName:
+          type: string
+          example: "Jane"
+        escortLastName:
+          type: string
+          example: "Doe"
+        visitorHostFirstName:
+          type: string
+          example: "John"
+        visitorHostLastName:
+          type: string
+          example: "Doe"
+        visitorHostCompany:
+          type: string
+          example: "ABC Company"
+
+        customerExternalReference:
+          type: string
+          example: "REF1234"
+        emailNotifications:
+          type: string
+          description: Identifies the legal email.
+          example: "jane_doe@email.com,test@email.com"
+        details:
+          type: string
+          example: "{\"serviceImpact\": true, \"serviceImpactedDescription\": \"Description\", \"serviceType\": \"Site Survey\", \"scopeOfSurvey\": \"Scope\"}"
+    CreateOspRoomRequest:
+      required:
+      - escortFirstName
+      - escortLastName
+      - sites
+      - visitorHostCompany
+      - visitorHostFirstName
+      - visitorHostLastName
+      - visitorType
+      - visitors
+      type: object
+      properties:
+        visitors:
+          type: array
+          items:
+            "$ref": "#/components/schemas/VisitorForPOPOSP"
+        sites:
+          type: array
+          items:
+            "$ref": "#/components/schemas/PopOspSite"            
+        visitorType:
+          type: boolean
+          example: true
+        escortFirstName:
+          type: string
+          example: "Jane"
+        escortLastName:
+          type: string
+          example: "Doe"
+        visitorHostFirstName:
+          type: string
+          example: "John"
+        visitorHostLastName:
+          type: string
+          example: "Doe"
+        visitorHostCompany:
+          type: string
+          example: "ABC Company"
+
+        customerExternalReference:
+          type: string
+          example: "external"
+        workDescription:
+          type: string
+          example: "desc"
+          
+        emailNotifications:
+          type: string
+          description: Identifies the legal email.
+          example: "jane_doe@email.com,test@email.com"
+        details:
+          type: string
+          example: "{\"serviceImpact\": true, \"serviceImpactedDescription\": \"Description\", \"serviceType\": \"Site Survey\", \"scopeOfSurvey\": \"Scope\"}"
+    PopOspLocation:
+      required:
+      - accessEndDate
+      - accessStartDate
+      - location
+      type: object
+      properties:
+        location:
+          type: string
+          example: "ABC Cage F150-B"
+        accessStartDate:
+          type: string
+          format: date
+          description: yyyy-MM-dd
+          example: "2023-06-07"
+        accessEndDate:
+          type: string
+          format: date
+          description: yyyy-MM-dd
+          example: "2023-06-07"
+        accessStartTime:
+          type: string
+          example: "06:22:00"
+        accessEndTime:
+          type: string
+          example: "06:22:00"
+    PopOspSite:
+      required:
+      - locations
+      - site
+      type: object
+      properties:
+        site:
+          maxLength: 6
+          minLength: 6
+          type: string
+          example: "IAD024"
+        locations:
+          type: array
+          items:
+            "$ref": "#/components/schemas/PopOspLocation"
+    VisitorForPOPOSP:
+      required:
+      - company
+      - contactType
+      - visitorEmail
+      - visitorFirstName
+      - visitorLastName
+      type: object
+      properties:
+        visitorFirstName:
+          type: string
+          example: "Jake"
+        visitorLastName:
+          type: string
+          example: "Doe"
+        visitorEmail:
+          type: string
+          description: Identifies the legal email.
+          example: "jake_doe@email.com"
+        company:
+          type: string
+          example: "ABC Corporation"
+        visitorPhone:
+          type: string
+          example: 1234567890        
+        contactType:
+          type: string
+          example: "test visitor wants to visit ABC loc"          
+
+    CreatePopRoomResponse:
+      type: object
+      properties:
+        workOrder:
+          type: array
+          items:
+            "$ref": "#/components/schemas/WorkOrder"
+    CreatePermBadgeRequest:
+      required:
+      - badgeStartDate
+      - email
+      - firstName
+      - lastName
+      - sites
+      type: object
+      properties:
+        firstName:
+          type: string
+          example: "John"
+        lastName:
+          type: string
+          example: "Doe"
+        email:
+          type: string
+          description: Identifies the legal email.
+          example: "john_doe@email.com"
+        phone:
+          type: string
+          example: "1234567890"
+        company:
+          type: string
+          example: "ABC Company"          
+          
+
+        badgeStartDate:
+          type: string
+          format: date
+          description: yyyy-MM-dd
+          example: "2023-06-07"
+        badgeExpirationDate:
+          type: string
+          format: date
+          description: yyyy-MM-dd
+          example: "2023-06-08"
+         
+        sites:
+          type: array
+          items:
+            "$ref": "#/components/schemas/SitePermBadge"
+        emailNotifications:
+          type: string
+          description: Identifies the legal email.
+          example: "jane_doe@email.com,test@email.com"
+          
+    LocationPermBadge:
+      required:
+      - accessStartDate
+      - location
+      type: object
+      properties:
+        location:
+          type: string
+          example: "ABC Cage F150-B"
+        accessStartDate:
+          type: string
+          format: date
+          description: yyyy-MM-dd
+          example: "2023-06-07"
+        accessEndDate:
+          type: string
+          format: date
+          description: yyyy-MM-dd
+          example:  "2023-06-08"
+
+    SitePermBadge:
+      required:
+      - locations
+      - site
+      type: object
+      properties:
+        site:
+          maxLength: 6
+          minLength: 6
+          type: string
+          example: "IAD024"
+        locations:
+          type: array
+          items:
+            "$ref": "#/components/schemas/LocationPermBadge"
+    CreatePermBadgeResponse:
+      type: object
+      properties:
+        workOrder:
+          type: array
+          items:
+            "$ref": "#/components/schemas/WorkOrder"
+    TerminatePermBadgesRequest:
+      required:
+      - company
+      - email
+      - firstName
+      - lastName
+      type: object
+      properties:
+        firstName:
+          type: string
+          example: "John"
+        lastName:
+          type: string
+          example: "Doe"
+        email:
+          type: string
+          description: Identifies the legal email.
+          example: "john_doe@email.com"
+        company:
+          type: string
+          example: "ABC Company"
+        badgeExpirationDate:
+          type: string
+          format: date
+          description: yyyy-MM-dd
+          example: "2023-06-07"
+    TerminatePermBadgesResponse:
+      type: object
+      properties:
+        workOrder:
+          "$ref": "#/components/schemas/WorkOrder"
+    ModifyPermBadgeRequest:
+      required:
+      - badgeStartDate
+      - company
+      - email
+      - firstName
+      - lastName
+      type: object
+      properties:
+       
+        firstName:
+          type: string
+          example: "John"
+        lastName:
+          type: string
+          example:  "Doe"
+        phone:
+          type: string
+          example: "1234567890"          
+        email:
+          type: string
+          description: Identifies the legal email.
+          example: "john@email.com"
+
+        company:
+          type: string
+          example: "ABC Company" 
+          
+
+        badgeStartDate:
+          type: string
+          format: date
+          description: yyyy-MM-dd
+          example:  "2023-06-07"
+        badgeExpirationDate:
+          type: string
+          format: date
+          description: yyyy-MM-dd
+          example: "2023-06-10"
+        addSites:
+          type: array
+          items:
+            "$ref": "#/components/schemas/SitePermBadge"
+        removeSites:
+          type: array
+          items:
+            "$ref": "#/components/schemas/SitePermBadge"
+        emailNotifications:
+          type: string
+          description: Identifies the legal email.
+          example: "john@email.com,jake@email.com"
+          
+    ModifyPermBadgeResponse:
+      type: object
+      properties:
+        workOrder:
+          type: array
+          items:
+            "$ref": "#/components/schemas/WorkOrder"
+
+
+    EditFacilityAccessRequest:
+      type: object
+      properties:
+        visitorPhone:
+          type: string
+          example: 1234567890
+        emailNotifications:
+          type: string
+          example: "test2@email.com,jane_doe@email.com"
+          
+
+
+    EditTicketResponse:
+      type: object
+      properties:
+        workOrderId:
+          type: string
+          example: WO09359635
+
+        
+    CancelFacilityAccessRequest:
+      type: object
+      properties:
+        cancelReason:
+          type: string
+          example: "Request no longer needed"
+    CancelFacilityAccesResponse:
+      type: object
+      properties:
+        result:
+          "$ref": "#/components/schemas/CancelResult"
+    CancelResult:
+      type: object
+      properties:
+        status:
+          type: string
+          example: "Work Order WO1234567 has been cancelled."
+
+    UserInformation:
+      type: object
+      properties:
+        firstName:
+          type: string
+          example: Jake
+        lastName:
+          type: string
+          example: Doe
+        email:
+          type: string
+          example: jake_doe@email.com
+        company:
+          type: string
+          example: DEF Company
+        contactPhone:
+          type: string
+          example: 1234567890
+    GetTicketDetailsResponse:
+      type: object
+      properties:
+        ticketId:
+          type: string
+          example: "WO9282943"
+        ticketType:
+          type: string
+          example: "Security"
+        ticketStatus:
+          type: string
+          example: "Approved"
+        requester:
+          type: string
+          example: "John Doe"
+        ticketCreatedDate:
+          type: string
+          format: date-time
+          example: "2023-06-07 11:01:06"
+        ticketUpdatedDate:
+          type: string
+          format: date-time
+          example:  "2023-06-07 11:02:03"
+        requestType:
+          type: string
+          example:  "Visitor Access"
+        ticketCategory:
+          type: string
+          example: "New Visitor Access"
+        contactFirstName:
+          type: string
+          example: "Jake"
+        contactLastName:
+          type: string
+          example: "Doe"
+        contactEmail:
+          type: string
+          example: "jake_doe@email.com"
+        contactPhone:
+          type: string
+          example: 0612345678
+        representingCompany:
+          type: string
+          example:  "DEF Company"
+        badgeStartDate:
+          type: string
+          format: date
+          example: "2023-06-07"
+        badgeEndDate:
+          type: string
+          example: "2023-06-07"
+        site:
+          type: array
+          items:
+            "$ref": "#/components/schemas/GetTicketDetailsSite"
+        modifiedBy:
+          type: string
+          example:  "system"
+        emailNotifications:
+          type: string
+          example: "john@email.com,jake@email.com"
+        visitorType:
+          type: string
+          example: "Escorted visitor"
+        visitorBadgeType:
+          type: string
+          example: "Visitor Access (Escorted)"
+        visitorHostFirstName:
+          type: string
+          example: "John"
+        visitorHostLastName:
+          type: string
+          example: "Doe"
+        hostCompany:
+          type: string
+          example: "ABC Company"
+        notes:
+          type: string
+          example: "Datacenter Tour"
+
+        contactType:
+          type: string
+          example: "Jake Doe going to visit IAD024 - ABC Cage F150-B on 06/07/2023"
+        escortFirstName:
+          type: string
+          example:  "Jane"
+        escortLastName:
+          type: string
+          example: "Doe"
+        visitorBadgeStartDate:
+          type: string
+          format: date
+          example:  "2023-06-07"
+        visitorBadgeEndDate:
+          type: string
+          format: date
+          example:  "2023-06-07"
+        customerExternalReference:
+          type: string
+          example: "REF1234"
+        workDescription:
+          type: string
+          example: "Datacenter Tour"
+        description:
+          type: string
+          example: "Jake Doe going to visit IAD024 - ABC Cage F150-B on 06/07/2023"
+
+        bulkRequest:
+          type: boolean
+          example: false
+    GetTicketDetailsSite:
+      type: object
+      properties:
+        site:
+          type: string
+          example: "IAD024"
+        locations:
+          type: array
+          items:
+            "$ref": "#/components/schemas/Location"
+        address:
+          type: string
+          example: "43830 Devin Shafron Drive (Bldg F)"
+    inline_response_400:
+      type: object
+      properties:
+        error:
+          "$ref": "#/components/schemas/inline_response_400_error"   
+    
+    badgeTickets:
+      title: Badge Tickets
+      type: object
+      properties:
+        content:
+          type: array
+          items:
+            "$ref": "#/components/schemas/vistorTickets_content"
+        pageable:
+          "$ref": "#/components/schemas/vistorTickets_pageable"
+      example:
+        content:
+        - id: "WO8744496"
+          title: "Request for Modify Permanent badge"
+          status: "Pending Approval"
+          site: "PHX015"
+          requestType: "Permanent Badge"
+          category: "Modify Badge"
+          isBulkRequest: false
+          createdOn: "2023-06-07 14:05:19"
+          updatedOn: "2023-06-07 14:06:09"
+          closedOn: ''
+          createdBy: "John Doe"
+          ticketType: "Facility Access"
+          description: "Request for Modify Permanent badge"
+          location: "COLO 8 ABC Cage 8.06"
+        pageable:
+          last: true
+          totalPages: 1
+          totalElements: 1
+          size: 25
+          number: 0
+          first: true
+          numberOfElements: 1
+          empty: false    
+    
+    ospTickets_content:
+      properties:
+        id:
+          type: string
+          example: "WO10093717"
+        title:
+          type: string
+          example: "web"
+        status:
+          type: string
+          example: "New"
+          enum:
+          - New
+          - In Progress
+          - Completed
+          - Cancelled
+        site:
+          type: string
+          example: "IAD039"
+        requestType:
+          type: string
+          example: "OSP Access"
+        category:
+          type: string
+          example:  "OSP Access"
+        isBulkRequest:
+          type: boolean
+          example: false 
+        createdOn:
+          type: string
+          format: date-time
+          example: "2024-02-27 08:08:57"
+        updatedOn:
+          type: string
+          format: date-time
+          example: "2024-02-27 08:09:48"
+        closedOn:
+          type: string
+          format: date-time
+          example: ""
+        createdBy:
+          type: string
+          example: "John Doe"
+        ticketType:
+          type: string
+          example: "Facility Access"
+        description:
+          type: string
+          example: "web" 
+        accessRequestedFor:
+          type: string
+          example: "John Doe" 
+        location:
+          type: string    
+          example: "166 (PPOE)"  
+    
+    popTickets_content:
+      properties:
+        id:
+          type: string
+          example: "WO1234567"
+        title:
+          type: string
+          example: "New POP Access"
+        status:
+          type: string
+          example: "Completed"
+          enum:
+          - New
+          - In Progress
+          - Completed
+          - Cancelled
+        site:
+          type: string
+          example: "DFW010"
+        requestType:
+          type: string
+          example: "Security"
+        category:
+          type: string
+          example:  "POP Room Access"
+        isBulkRequest:
+          type: boolean
+          example: false 
+        createdOn:
+          type: string
+          format: date-time
+          example: "2022-10-19 23:06:49"
+        updatedOn:
+          type: string
+          format: date-time
+          example: "2022-10-19 23:06:49"
+        closedOn:
+          type: string
+          format: date-time
+          example: "2022-10-19 23:06:49"
+        createdBy:
+          type: string
+          example: "John Doe"
+        ticketType:
+          type: string
+          example: "Facility Access"
+        description:
+          type: string
+          example: "CONTRACTOR" 
+        location:
+          type: string    
+          example: "Room 01"
+
+
+    popTicketsLocations:
+      title: PoP/POE locations
+      type: object
+      properties:
+        locations:
+          type: string
+        locationId:
+          type: string
+
+
+      example:
+        - location: "166 (PPOE)"
+          locationId: "98ae7f2013ca4f44f16fd0528144b082"
+
+  
+    ospTickets:
+      title: PoP/POE Room Tickets
+      type: object
+      properties:
+        content:
+          type: array
+          items:
+            "$ref": "#/components/schemas/ospTickets_content"
+        pageable:
+          "$ref": "#/components/schemas/vistorTickets_pageable"
+      example:
+        content:
+        - id: "WO8744078"
+          title: "web"
+          status: "New"
+          site: "PHX015"
+          requestType: "PoP/POE Room Access"
+          category: ""
+          isBulkRequest: false
+          createdOn: "2023-06-07 11:57:51"
+          updatedOn: "2023-06-07 11:57:52"
+          closedOn: ''
+          createdBy: "John Doe"
+          ticketType: "Facility Access"
+          description: "web"
+          location:  "COLO 8 ABC Cage 8.06"
+        pageable:
+          last: true
+          totalPages: 1
+          totalElements: 1
+          size: 25
+          number: 0
+          first: true
+          numberOfElements: 1
+          empty: false  
+    
+    popTickets:
+      title: PoP/POE Room Tickets
+      type: object
+      properties:
+        content:
+          type: array
+          items:
+            "$ref": "#/components/schemas/popTickets_content"
+        pageable:
+          "$ref": "#/components/schemas/vistorTickets_pageable"
+      example:
+        content:
+        - id: "WO8744078"
+          title: "web"
+          status: "New"
+          site: "PHX015"
+          requestType: "PoP/POE Room Access"
+          category: ""
+          isBulkRequest: false
+          createdOn: "2023-06-07 11:57:51"
+          updatedOn: "2023-06-07 11:57:52"
+          closedOn: ''
+          createdBy: "John Doe"
+          ticketType: "Facility Access"
+          description: "web"
+          location:  "COLO 8 ABC Cage 8.06"
+        pageable:
+          last: true
+          totalPages: 1
+          totalElements: 1
+          size: 25
+          number: 0
+          first: true
+          numberOfElements: 1
+          empty: false    
+    
+    vistorTickets_content:
+      properties:
+        id:
+          type: string
+          example: "WO1234567"
+        title:
+          type: string
+          example: "New Visitor Access"
+        status:
+          type: string
+          example: "Completed"
+          enum:
+          - Pending Approval
+          - Approved
+          - In Progress
+          - Completed
+          - Aapproval Denied
+          - Cancelled
+        site:
+          type: string
+          example: "DFW010"
+        requestType:
+          type: string
+          example: "Security"
+        category:
+          type: string
+          example: "Visitor Access (Escorted)"
+        isBulkRequest:
+          type: boolean
+          example: false
+        createdOn:
+          type: string
+          format: date-time
+          example: "2022-10-12 15:53:37"
+        updatedOn:
+          type: string
+          format: date-time
+          example: "2022-10-12 15:53:37"
+        closedOn:
+          type: string
+          format: date-time
+          example: "2022-10-12 15:53:37"
+        createdBy:
+          type: string
+          example: "John Doe"
+        ticketType:
+          type: string
+          example: "Facility Access"
+        description:
+          type: string
+          example: "New Visitor Access"
+        location:
+          type: string
+          example: "Room 01"
+  
+    vistorTickets_pageable:
+      properties:
+        last:
+          type: boolean
+        totalPages:
+          type: integer
+          format: int32
+        totalElements:
+          type: integer
+          format: int64
+        size:
+          type: integer
+          format: int32
+        number:
+          type: integer
+          format: int32
+        first:
+          type: boolean
+        numberOfElements:
+          type: integer
+          format: int32
+        empty:
+          type: boolean  
+  
+    vistorTickets:
+      title: Visitor Tickets
+      type: object
+      properties:
+        content:
+          type: array
+          items:
+            "$ref": "#/components/schemas/vistorTickets_content"
+        pageable:
+          "$ref": "#/components/schemas/vistorTickets_pageable"
+      example:
+        content:
+        - id: "WO9283130"
+          title: "Jake Doe going to visit IAD024 - ABC Cage F150-B on 06/07/2023"
+          status: "Approved"
+          site: "IAD024"
+          requestType: "Visitor Access"
+          category: "New Visitor Access"
+          isBulkRequest: false
+          createdOn: "2023-06-07 11:39:17"
+          updatedOn: "2023-06-07 11:40:15"
+          closedOn: ''
+          createdBy:  "John Doe"
+          ticketType: "Facility Access"
+          description: "New Visitor Access"
+          location: "ABC Cage F150-B"
+        pageable:
+          last: true
+          totalPages: 1
+          totalElements: 1
+          size: 25
+          number: 0
+          first: true
+          numberOfElements: 1
+          empty: false
+          
+    inline_response_400_error:
+      type: object
+      properties:
+        correlationId:
+          type: string
+        type:
+          type: string
+          enum:
+          - client
+          - server
+        message:
+          type: string
+        details:
+          type: string
+  responses:
+    '400':
+      description: Bad Request
+      content:
+        application/json:
+          schema:
+            "$ref": "#/components/schemas/inline_response_400"
+          example:
+            error:
+              correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+              type: client
+              message: The request could not be understood by the server due to malformed
+                syntax.
+    '401':
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            "$ref": "#/components/schemas/inline_response_400"
+          example:
+            error:
+              correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+              type: client
+              message: Unauthorized. Access token is missing or invalid.
+    '403':
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            "$ref": "#/components/schemas/inline_response_400"
+          example:
+            error:
+              correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+              type: client
+              message: The server understood the request, but will not fulfill it.
+    '404':
+      description: Not Found
+      content:
+        application/json:
+          schema:
+            "$ref": "#/components/schemas/inline_response_400"
+          example:
+            error:
+              correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+              type: client
+              message: Resource not found.
+    '500':
+      description: Internal Server Error
+      content:
+        application/json:
+          schema:
+            "$ref": "#/components/schemas/inline_response_400"
+          example:
+            error:
+              correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+              type: server
+              message: Oops. Something went wrong. The server encountered an internal
+                error or misconfiguration and was unable to complete your request.
+
+
+
+  securitySchemes:
+    Authorization:
+      type: http
+      description: Get the access token by calling the AccessToken API first. Then
+        provide the access token below as the Authorization header and click Authorize.
+      scheme: bearer
+      bearerFormat: Bearer

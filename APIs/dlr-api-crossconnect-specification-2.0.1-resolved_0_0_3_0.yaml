@@ -1,0 +1,407 @@
+---
+openapi: 3.0.0
+info:
+  title: CrossConnectInventory-v2
+  description: Provides the customer with secure access to view Cross Connect Inventory
+    data of the customer’s space at a DLR location/site.
+  version: 2.0.8
+servers:
+- url: https://playground.digitalrealty.com/v2
+- url: https://sandbox.digitalrealty.com/v2
+- url: https://api.digitalrealty.com/v2
+security:
+- Authorization: []
+tags:
+- name: Cross Connect Inventory
+paths:
+  "/cross-connect-inventory":
+    get:
+      tags:
+      - Cross Connect Inventory
+      description: The method can be used to retrieve the cross connect inventory
+        of the customers account.
+      operationId: cross-connect-list
+      parameters:
+      - "$ref": "#/components/parameters/masterAccountIdParam"
+      - "$ref": "#/components/parameters/accountIdParam"
+      - name: site
+        in: query
+        description: Specify the site to filter by
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: billingAccountNumber
+        in: query
+        description: Specify the billing accountnumber to filter by
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: interconnectionPanel
+        in: query
+        description: Specify the interconnection panel to filter by
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: interconnectionPortStatus
+        in: query
+        description: Specify the status of the interconnection port to filter by
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+          enum:
+          - Pre-Wired
+          - Available
+          - In-Service
+      - "$ref": "#/components/parameters/sizeParam"
+      - "$ref": "#/components/parameters/pageParam"
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/CrossConnects"
+        '400':
+          "$ref": "#/components/responses/400"
+        '401':
+          "$ref": "#/components/responses/401"
+        '403':
+          "$ref": "#/components/responses/403"
+        '404':
+          "$ref": "#/components/responses/404"
+        '500':
+          "$ref": "#/components/responses/500"
+  "/cross-connect-inventory/{id}":
+    get:
+      tags:
+      - Cross Connect Inventory
+      description: The method can be used to retrieve the details of a cross connect.
+      operationId: cross-connect-read
+      parameters:
+      - "$ref": "#/components/parameters/masterAccountIdParam"
+      - "$ref": "#/components/parameters/accountIdParam"
+      - "$ref": "#/components/parameters/idParam"
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/CrossConnectDetails"
+        '400':
+          "$ref": "#/components/responses/400"
+        '401':
+          "$ref": "#/components/responses/401"
+        '403':
+          "$ref": "#/components/responses/403"
+        '404':
+          "$ref": "#/components/responses/404"
+        '500':
+          "$ref": "#/components/responses/500"
+components:
+  schemas:
+    CrossConnects:
+      title: Cross Connects
+      type: object
+      properties:
+        content:
+          "$ref": "#/components/schemas/Content"
+        pageable:
+          "$ref": "#/components/schemas/Pageable"
+    Content:
+      type: array
+      items:
+        type: object
+        properties:
+          id:
+            type: string
+          site:
+            type: string
+          billingAccountNumber:
+            type: string
+          accountId:
+            type: string
+          interconnectionPanel:
+            type: string
+          interconnectionPortId:
+            type: string
+          interconnectionPortStatus:
+            type: string
+            enum:
+            - Pre-Wired
+            - Available
+            - In-Service
+          mediaType:
+            type: string
+          zPanelId:
+            type: string
+          zPortNo:
+            type: string
+
+
+
+        example:
+          id: ZZSL6VPMZVUWDX
+          site: JFK010
+          billingAccountNumber: 111-C143533
+          accountId: 0012E00002dzuIMQAY
+          interconnectionPanel: "634.M25.0000.PNL 01"
+          interconnectionPortId: '133'
+          interconnectionPortStatus: In-Service
+          mediaType: Fiber
+          zPanelId:  "111.12.12.12"
+          zPortNo:  "11"
+
+
+    Pageable:
+      properties:
+        last:
+          type: boolean
+          example: false
+        totalPages:
+          type: integer
+          format: int32
+          example: 168
+        totalElements:
+          type: integer
+          format: int64
+          example: 4180
+        size:
+          type: integer
+          format: int32
+          example: 25
+        number:
+          type: integer
+          format: int32
+          example: 0
+        numberOfElements:
+          type: integer
+          format: int32
+          example: 25
+        first:
+          type: boolean
+          example: true
+
+        empty:
+          type: boolean
+          example: false
+
+    CrossConnectDetails:
+      title: Cross Connect Details
+      type: object
+      properties:
+        id:
+          type: string
+        site:
+          type: string
+        location:
+          type: string
+        billingAccountNumber:
+          type: string
+        accountId:
+          type: string
+        customerCabinet:
+          type: string
+        customerPanelName:
+          type: string
+        customerPortId:
+          type: string
+        customerLabel:
+          type: string
+        interconnectionPanel:
+          type: string
+        interconnectionPortId:
+          type: string
+        interconnectionPortStatus:
+          type: string
+          enum:
+          - Pre-Wired
+          - Available
+          - In-Service
+        portComment:
+          type: string
+        mediaType:
+          type: string
+        serviceLevel:
+          type: string
+          enum:
+          - Connectivity-Standard
+          - Connectivity-Prem
+          - Connectivity-ICC
+          - Connectivity-SLXCT
+        connectedTo:
+          type: string
+        caseNumber:
+          type: string
+        installDate:
+          type: string
+          format: date-time
+        orderingParty:
+          type: string
+        circuitId:
+          type: string
+        carrierCircuitId:
+          type: string
+        zPanelId:
+          type: string
+        zPortNo:
+          type: string
+
+
+
+      example:
+        id: ZZSL6VPMZVUWDX
+        site: JFK010
+        location: OOS
+        billingAccountNumber: "111-C143533"
+        accountId: 0012E00002dzuIMQAY
+        customerCabinet: "Outside Telx Facility"
+        customerPanelName: "OOS ICI FBR to 634.M25.0000_ICI_PNL 01"
+        customerPortId: '133'
+        customerLabel: null
+        interconnectionPanel: "634.M25.0000.PNL 01"
+        interconnectionPortId: '133'
+        interconnectionPortStatus: "In-Service"
+        portComment: null
+        mediaType: Fiber
+        serviceLevel: "Connectivity-ICC"
+        connectedTo: "Megaport (USA) Inc."
+        caseNumber: '158831'
+        installDate: "2013-04-23 12:04:00"
+        orderingParty: "Service Fabric"
+        circuitId: "SCCSMF00782459"
+        carrierCircuitId: "8296df65 (106222)"
+        zPanelId: "111.12.12.12"
+        zPortNo: "11"
+
+
+    Error:
+      type: object
+      properties:
+        error:
+          properties:
+            correlationId:
+              type: string
+            type:
+              type: string
+              enum:
+              - client
+              - server
+            message:
+              type: string
+            details:
+              type: string
+  responses:
+    '400':
+      description: Bad Request
+      content:
+        application/json:
+          schema:
+            "$ref": "#/components/schemas/Error"
+          example:
+            error:
+              correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+              type: client
+              message: The request could not be understood by the server due to malformed
+                syntax.
+    '401':
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            "$ref": "#/components/schemas/Error"
+          example:
+            error:
+              correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+              type: client
+              message: Unauthorized. Access token is missing or invalid.
+    '403':
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            "$ref": "#/components/schemas/Error"
+          example:
+            error:
+              correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+              type: client
+              message: The server understood the request, but will not fulfill it.
+    '404':
+      description: Not Found
+      content:
+        application/json:
+          schema:
+            "$ref": "#/components/schemas/Error"
+          example:
+            error:
+              correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+              type: client
+              message: Resource not found.
+    '500':
+      description: Internal Server Error
+      content:
+        application/json:
+          schema:
+            "$ref": "#/components/schemas/Error"
+          example:
+            error:
+              correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+              type: server
+              message: Oops. Something went wrong. The server encountered an internal
+                error or misconfiguration and was unable to complete your request.
+  parameters:
+    masterAccountIdParam:
+      name: master-account-id
+      in: header
+      description: Master account id to be passed as a header
+      required: true
+      schema:
+        type: string
+    accountIdParam:
+      name: account-id
+      in: header
+      description: Account id to be passed as a header
+      required: true
+      schema:
+        type: string
+    sizeParam:
+      name: size
+      in: query
+      description: The number of items to return
+      schema:
+        maximum: 1000
+        minimum: 1
+        type: integer
+        format: int32
+        default: 25
+    pageParam:
+      name: page
+      in: query
+      description: The page number to return
+      schema:
+        minimum: 0
+        type: integer
+        format: int32
+        default: 0
+    idParam:
+      name: id
+      in: path
+      description: Specify the identification number
+      required: true
+      schema:
+        type: string
+  securitySchemes:
+    Authorization:
+      type: http
+      description: Get the access token by calling the AccessToken API first. Then
+        provide the access token below as the Authorization header and click Authorize.
+      scheme: bearer
+      bearerFormat: Bearer

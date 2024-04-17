@@ -1,0 +1,384 @@
+---
+openapi: 3.0.0
+info:
+  title: ServiceTickets-v1
+  description: This API provides a catch-all view for all tickets allowing users to
+    update open tickets applicable to the customer’s account.
+  version: 1.0.2
+servers:
+- url: https://playground.digitalrealty.com/v1
+- url: https://sandbox.digitalrealty.com/v1
+- url: https://api.digitalrealty.com/v1
+security:
+- Authorization: []
+paths:
+  "/service-tickets":
+    get:
+      tags:
+      - Service Tickets
+      description: The method can be used to retrieve all service tickets of the customers
+        account.
+      operationId: service-tickets
+      parameters:
+      - name: Master-Account-Id
+        in: header
+        description: Master account id to be passed as a header
+        required: true
+        schema:
+          type: string
+      - name: Account-Id
+        in: header
+        description: Account id to be passed as a header
+        required: true
+        schema:
+          type: string
+      - name: site
+        in: query
+        description: Specify the sitecode to filter by
+        schema:
+          type: string
+      - name: status
+        in: query
+        description: Specify the status to filter by
+        schema:
+          type: string
+      - name: requestType
+        in: query
+        description: Specify the requestType to filter by
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: category
+        in: query
+        description: Specify the category to filter by
+        schema:
+          type: string
+      - name: createdBy
+        in: query
+        description: Specify the email to filter by
+        schema:
+          type: string
+      - name: size
+        in: query
+        description: The number of items to return
+        schema:
+          maximum: 1000
+          minimum: 1
+          type: integer
+          format: int32
+          default: 25
+      - name: page
+        in: query
+        description: The page number to return
+        schema:
+          minimum: 0
+          type: integer
+          format: int32
+          default: 0
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ServiceTckets"
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: client
+                  message: The request could not be understood by the server due to
+                    malformed syntax.
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: client
+                  message: Unauthorized. Access token is missing or invalid.
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: client
+                  message: The server understood the request, but will not fulfill
+                    it.
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: client
+                  message: Resource not found.
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: server
+                  message: Oops. Something went wrong. The server encountered an internal
+                    error or misconfiguration and was unable to complete your request.
+components:
+  schemas:
+    ServiceTckets:
+      title: Service Tickets
+      type: object
+      properties:
+        content:
+          type: array
+          items:
+            "$ref": "#/components/schemas/ServiceTckets_content"
+        pageable:
+          "$ref": "#/components/schemas/ServiceTckets_pageable"
+      example:
+        content:
+        - id: WO9289370
+          title: "Customer Support Title"
+          status: "New"
+          site: "PHX015"
+          requestType: "Accounts Receivable"
+          category: "General Billing Inquiry"
+          isBulkRequest: false
+          createdOn: "2023-06-15 12:27:56"
+          updatedOn: "2023-06-15 12:27:56"
+          closedOn: ''
+          createdBy: "portaluser test"
+          ticketType: "Customer Support"
+          description: "Customer Support Title"
+          accessRequestedFor: " "
+          location: Rack 01
+
+        pageable:
+          last: false
+          totalPages: 643
+          totalElements: 16061
+          size: 25
+          number: 0
+          numberOfElements: 25
+          first: true
+          empty: false
+    inline_response_400:
+      type: object
+      properties:
+        error:
+          "$ref": "#/components/schemas/inline_response_400_error"
+    ServiceTckets_content:
+      properties:
+        id:
+          type: string
+        title:
+          type: string
+        status:
+          type: string
+        site:
+          type: string
+        requestType:
+          type: string
+        category:
+          type: string
+        isBulkRequest:
+          type: boolean
+        createdOn:
+          type: string
+          format: date-time
+        updatedOn:
+          type: string
+          format: date-time
+        closedOn:
+          type: string
+          format: date-time
+        createdBy:
+          type: string
+        ticketType:
+          type: string
+        description:
+          type: string
+        accessRequestedFor:
+          type: string
+        location:
+          type: string
+          
+    ServiceTckets_pageable:
+      properties:
+        last:
+          type: boolean
+        totalPages:
+          type: integer
+          format: int32
+        totalElements:
+          type: integer
+          format: int64
+        size:
+          type: integer
+          format: int32
+        number:
+          type: integer
+          format: int32
+        numberOfElements:
+          type: integer
+          format: int32
+        first:
+          type: boolean
+        empty:
+          type: boolean
+    inline_response_400_error:
+      type: object
+      properties:
+        correlationId:
+          type: string
+        type:
+          type: string
+          enum:
+          - client
+          - server
+        message:
+          type: string
+        details:
+          type: string
+  responses:
+    '400':
+      description: Bad Request
+      content:
+        application/json:
+          schema:
+            "$ref": "#/components/schemas/inline_response_400"
+          example:
+            error:
+              correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+              type: client
+              message: The request could not be understood by the server due to malformed
+                syntax.
+    '401':
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            "$ref": "#/components/schemas/inline_response_400"
+          example:
+            error:
+              correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+              type: client
+              message: Unauthorized. Access token is missing or invalid.
+    '403':
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            "$ref": "#/components/schemas/inline_response_400"
+          example:
+            error:
+              correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+              type: client
+              message: The server understood the request, but will not fulfill it.
+    '404':
+      description: Not Found
+      content:
+        application/json:
+          schema:
+            "$ref": "#/components/schemas/inline_response_400"
+          example:
+            error:
+              correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+              type: client
+              message: Resource not found.
+    '500':
+      description: Internal Server Error
+      content:
+        application/json:
+          schema:
+            "$ref": "#/components/schemas/inline_response_400"
+          example:
+            error:
+              correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+              type: server
+              message: Oops. Something went wrong. The server encountered an internal
+                error or misconfiguration and was unable to complete your request.
+  parameters:
+    masterAccountIdParam:
+      name: Master-Account-Id
+      in: header
+      description: Master account id to be passed as a header
+      required: true
+      schema:
+        type: string
+    accountIdParam:
+      name: Account-Id
+      in: header
+      description: Account id to be passed as a header
+      required: true
+      schema:
+        type: string
+    siteParam:
+      name: site
+      in: query
+      description: Specify the sitecode to filter by
+      schema:
+        type: string
+    statusParam:
+      name: status
+      in: query
+      description: Specify the status to filter by
+      schema:
+        type: string
+    categoryParam:
+      name: category
+      in: query
+      description: Specify the category to filter by
+      schema:
+        type: string
+    createdbyParam:
+      name: createdBy
+      in: query
+      description: Specify the email to filter by
+      schema:
+        type: string
+    sizeParam:
+      name: size
+      in: query
+      description: The number of items to return
+      schema:
+        maximum: 1000
+        minimum: 1
+        type: integer
+        format: int32
+        default: 25
+    pageParam:
+      name: page
+      in: query
+      description: The page number to return
+      schema:
+        minimum: 0
+        type: integer
+        format: int32
+        default: 0
+  securitySchemes:
+    Authorization:
+      type: http
+      description: Get the access token by calling the AccessToken API first. Then
+        provide the access token below as the Authorization header and click Authorize.
+      scheme: bearer
+      bearerFormat: Bearer

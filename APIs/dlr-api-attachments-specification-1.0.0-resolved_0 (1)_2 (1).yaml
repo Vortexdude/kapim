@@ -1,0 +1,237 @@
+---
+openapi: 3.0.0
+info:
+  title: Attachments-v1
+  description: The API should be used to either upload attachments to remote hands,
+    shipments, customer service and facility access requests or retrieve attachments.
+  version: 1.0.4
+servers:
+- url: https://playground.digitalrealty.com/v1
+- url: https://sandbox.digitalrealty.com/v1
+- url: https://api.digitalrealty.com/v1
+security:
+- Authorization: []
+tags:
+- name: Attachments
+paths:
+  "/attachments":
+    post:
+      tags:
+      - Attachments
+      description: The method can be used to upload an attachment to an existing work
+        order.
+      operationId: attachments-create
+      parameters:
+      - name: Master-Account-Id
+        in: header
+        description: Master account id to be passed as a header
+        required: true
+        schema:
+          type: string
+      - name: Account-Id
+        in: header
+        description: Account id to be passed as a header
+        required: true
+        schema:
+          type: string
+      - name: requestId
+        in: query
+        description: Specify the request id
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: file_name
+        in: query
+        description: Specify the file name
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: string
+              format: binary
+        required: true
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/AttachmentsPost"
+  "/attachments/{ticketId}":
+    get:
+      tags:
+      - Attachments
+      description: The method can be used to retrieve all attachments that are made
+        to a specific work order.
+      operationId: attachments-list
+      parameters:
+      - name: Master-Account-Id
+        in: header
+        description: Master account id to be passed as a header
+        required: true
+        schema:
+          type: string
+      - name: Account-Id
+        in: header
+        description: Account id to be passed as a header
+        required: true
+        schema:
+          type: string
+      - name: ticketId
+        in: path
+        description: Specify the identification number
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  "$ref": "#/components/schemas/Attachments"
+  "/attachments/{ticketId}/file/{id}":
+    get:
+      tags:
+      - Attachments
+      description: The method can be used to download the file that is attached to
+        a specific work order.
+      operationId: attachments-file-read
+      parameters:
+      - name: Master-Account-Id
+        in: header
+        description: Master account id to be passed as a header
+        required: true
+        schema:
+          type: string
+      - name: Account-Id
+        in: header
+        description: Account id to be passed as a header
+        required: true
+        schema:
+          type: string
+      - name: ticketId
+        in: path
+        description: Specify the identification number
+        required: true
+        schema:
+          type: string
+      - name: id
+        in: path
+        description: Specify the identification number of the file
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            "*/*":
+              schema:
+                type: string
+                format: binary
+              example: c3RyaW5nKCRiaW5hcnkp
+components:
+  schemas:
+    Attachments:
+      title: Attachments
+      type: object
+      properties:
+        id:
+          type: string
+        contentType:
+          type: string
+        filename:
+          type: string
+        hash:
+          type: string
+        createdBy:
+          type: string
+        createdOn:
+          type: string
+          format: date-time
+
+      example:
+        id: 807509961b936cd0e96a866ecc4bcb45
+        contentType: multipart/form-data
+        filename: report.pdf
+        hash: 8decc8571946d4cd70a024949e033a2a
+        createdBy: John Doe
+        createdOn: '2023-09-26 11:59:51'
+
+    AttachmentsPost:
+      title: Attachments
+      type: object
+      properties:
+        id:
+          type: string
+        contentType:
+          type: string
+        filename:
+          type: string
+        hash:
+          type: string
+        createdBy:
+          type: string
+        createdOn:
+          type: string
+          format: date-time
+        ticketId:
+          type: string
+      example:
+        id: 807509961b936cd0e96a866ecc4bcb45
+        contentType: multipart/form-data
+        filename: report.pdf
+        hash: 8decc8571946d4cd70a024949e033a2a
+        createdBy: John Doe
+        createdOn: '2023-09-26 11:59:51'
+        ticketId: "WO9271561"
+  parameters:
+    fileIdParam:
+      name: file_id
+      in: path
+      description: Specify the identification number of the file
+      required: true
+      style: simple
+      explode: false
+      schema:
+        type: string
+    masterAccountIdParam:
+      name: Master-Account-Id
+      in: header
+      description: Master account id to be passed as a header
+      required: true
+      schema:
+        type: string
+    accountIdParam:
+      name: Account-Id
+      in: header
+      description: Account id to be passed as a header
+      required: true
+      schema:
+        type: string
+    idParam:
+      name: id
+      in: path
+      description: Specify the identification number
+      required: true
+      schema:
+        type: string
+  securitySchemes:
+    Authorization:
+      type: http
+      description: Get the access token by calling the AccessToken API first. Then
+        provide the access token below as the Authorization header and click Authorize.
+      scheme: bearer
+      bearerFormat: Bearer

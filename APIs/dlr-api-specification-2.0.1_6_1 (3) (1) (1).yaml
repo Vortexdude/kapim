@@ -1,0 +1,426 @@
+---
+openapi: 3.0.3
+info:
+  title: DCIM-v2
+  description: 'Enables customers to poll Live data values of a DCIM device function
+    using the API Call.
+
+    '
+  version: 2.0.4
+servers:
+- url: https://playground.digitalrealty.com/v2
+- url: https://sandbox.digitalrealty.com/v2
+- url: https://api.digitalrealty.com/v2
+security:
+- Authorization: []
+tags:
+- name: DCIM
+paths:
+  "/dcim":
+        
+  
+    get:
+      tags:
+      - DCIM
+      description: The method can be used to dcim values of the customers account.
+      operationId: dcim-list
+      parameters:
+      - "$ref": "#/components/parameters/masterAccountIdParam"
+      - "$ref": "#/components/parameters/accountIdParam"
+      - name: ddids
+        in: query
+        description: Specify the ddid's in a comma seperated list
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: profile
+        in: query
+        description: Specify the profile
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+      - name: subset
+        in: query
+        description: Specify the DCIM subset type and recieve a smaller subset of
+          fields in the JSON
+        style: form
+        explode: true
+        schema:
+          maximum: 2
+          minimum: 0
+          type: integer
+          format: int32
+      responses:
+        '200':
+          "$ref": "#/components/responses/200"
+        '400':
+          "$ref": "#/components/responses/400"
+        '401':
+          "$ref": "#/components/responses/401"
+        '403':
+          "$ref": "#/components/responses/403"
+        '404':
+          "$ref": "#/components/responses/404"
+        '500':
+          "$ref": "#/components/responses/500"
+          
+
+components:
+  schemas:
+    dcimSchemaResponseTypeDefault:
+      title: DCIM Default subset = 3
+      type: object
+      properties:
+        LiveDataPointValues:
+          type: array
+          items:
+            type: object
+            properties:
+              functionValue:
+                type: number
+                format: double
+              timeStamp:
+                type: string
+                format: date-time
+              functionName:
+                type: string
+              functionAliasName:
+                type: string
+              functionActive:
+                type: number 
+              functionUnits:
+                type: string
+              commAlActive:
+                type: integer
+              deviceName:
+                type: string    
+              functionRating:
+                type: integer               
+              isAnalogDigital:
+                type: string                
+              isInFunctionAlarm:
+                type: integer
+              ID:
+                type: integer
+
+
+      example:
+        LiveDataPointValues:
+        - functionValue: 68.00
+          timeStamp: "8/31/2023 2:44:00 PM"
+          functionName: "OutAmpsB"
+          functionAliasName: ''
+          functionActive: 1
+          functionUnits: "Amps"
+          commAlActive: 0
+          deviceName: "S120_PDUA1"
+          functionRating: "830"
+          utcTimeStamp: "8/31/2023 11:44:00 AM"
+          isAnalogDigital: null
+          isInFunctionAlarm: 0
+          globalFunctionName: "AmpB"
+          customerFunctionName: ""
+          standardisedUnits: ""
+          reportLabel: ""
+          workOrderNumber: ""
+          ID: 1744282 
+          
+    dcimSchemaResponseType0:
+      title: DCIM Subset = 0
+      type: object
+      properties:
+        LiveDataPointValues:
+          type: array
+          items:
+            type: object
+            properties:
+              functionValue:
+                type: number
+                format: double
+              commAlActive:
+                type: integer
+              functionRating:
+                type: integer                
+              isAnalogDigital:
+                type: string
+              isInFunctionAlarm:
+                type: integer
+              ID:
+                type: integer
+
+      example:
+        LiveDataPointValues:
+        - functionValue: 97.95
+          commAlActive: 0
+          functionRating: 300
+          isAnalogDigital: 0
+          isInFunctionAlarm: 0
+          ID: 1000001
+          
+    dcimSchemaResponseType1:
+      title: DCIM Subset = 1
+      type: object
+      properties:
+        LiveDataPointValues:
+          type: array
+          items:
+            type: object
+            properties:
+
+              functionValue:
+                type: number
+                format: double
+              timeStamp:
+                type: string
+                format: date-time
+              commAlActive:
+                type: integer
+              functionRating:
+                type: integer
+              utcTimeStamp:
+                type: string
+                format: date-time
+              isAnalogDigital:
+                type: string                
+              isInFunctionAlarm:
+                type: integer
+              ID:
+                type: integer
+
+
+      example:
+        LiveDataPointValues:
+        - functionValue: 97.95
+          timeStamp: "8/31/2023 7:14:00 PM"
+          commAlActive: 0
+          functionRating: 300
+          utcTimeStamp: "8/31/2023 4:14:00 PM"
+          isAnalogDigital: "Analog"
+          isInFunctionAlarm: Analog
+          ID: 1744282
+                  
+    dcimSchemaResponseType2:
+      title: DCIM Subset = 2
+      type: object
+      properties:
+        LiveDataPointValues:
+          type: array
+          items:
+            type: object
+            properties:
+              functionValue:
+                type: number
+                format: double
+              functionName:
+                type: string
+              commAlActive:
+                type: integer   
+              functionRating:
+                type: integer
+              isAnalogDigital:
+                type: string                
+              isInFunctionAlarm:
+                type: integer
+              ID:
+                type: integer
+
+
+      example:
+        LiveDataPointValues:
+        - functionValue: 97.95
+          functionName: Total KVA
+          commAlActive: 0
+          functionRating: 300
+          isAnalogDigital: null
+          isInFunctionAlarm: 0
+          ID: 1744282
+          
+    dcimSchemaResponseTypeDefault3:
+      title: DCIM Subset = null
+      type: object
+      properties:
+        LiveDataPointValues:
+          type: array
+          items:
+            type: object
+            properties:
+              functionValue:
+                type: number
+                format: double
+              timeStamp:
+                type: string
+                format: date-time
+              functionName:
+                type: string
+              functionAliasName:
+                type: string
+              functionActive:
+                type: number 
+              functionUnits:
+                type: string
+              commAlActive:
+                type: integer
+              deviceName:
+                type: string    
+              functionRating:
+                type: integer
+
+              isAnalogDigital:
+                type: string                
+              isInFunctionAlarm:
+                type: integer
+
+              ID:
+                type: integer
+
+      example:
+        LiveDataPointValues:
+        - functionValue: "68.00"
+          timeStamp: "8/31/2023 2:44:00 PM"
+          functionName: "OutAmpsB"
+          functionAliasName: ''
+          functionActive: 1
+          functionUnits: "Amps"
+          commAlActive: 0
+          deviceName: "S120_PDUA1"
+          functionRating: 830
+          isAnalogDigital: null
+          isInFunctionAlarm: 0
+          ID: 1744294          
+    Error:
+      type: object
+      properties:
+        error:
+          properties:
+            correlationId:
+              type: string
+            type:
+              type: string
+              enum:
+              - client
+              - server
+            message:
+              type: string
+            details:
+              type: string
+  responses:
+    '200':
+      description: OK
+      content:
+        application/json:
+          schema:
+            discriminator:
+              propertyName: response_type
+            oneOf:
+            - "$ref": "#/components/schemas/dcimSchemaResponseTypeDefault"
+            - "$ref": "#/components/schemas/dcimSchemaResponseType0"
+            - "$ref": "#/components/schemas/dcimSchemaResponseType1"
+            - "$ref": "#/components/schemas/dcimSchemaResponseType2"
+            - "$ref": "#/components/schemas/dcimSchemaResponseTypeDefault3"
+    '400':
+      description: Bad Request
+      content:
+        application/json:
+          schema:
+            "$ref": "#/components/schemas/Error"
+          example:
+            error:
+              correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+              type: client
+              message: The request could not be understood by the server due to malformed
+                syntax.
+    '401':
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            "$ref": "#/components/schemas/Error"
+          example:
+            error:
+              correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+              type: client
+              message: Unauthorized. Access token is missing or invalid.
+    '403':
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            "$ref": "#/components/schemas/Error"
+          example:
+            error:
+              correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+              type: client
+              message: The server understood the request, but will not fulfill it.
+    '404':
+      description: Not Found
+      content:
+        application/json:
+          schema:
+            "$ref": "#/components/schemas/Error"
+          example:
+            error:
+              correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+              type: client
+              message: Resource not found.
+    '500':
+      description: Internal Server Error
+      content:
+        application/json:
+          schema:
+            "$ref": "#/components/schemas/Error"
+          example:
+            error:
+              correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+              type: server
+              message: Oops. Something went wrong. The server encountered an internal
+                error or misconfiguration and was unable to complete your request.
+  parameters:
+    masterAccountIdParam:
+      name: master-account-id
+      in: header
+      description: Master account id to be passed as a header
+      required: true
+      schema:
+        type: string
+    accountIdParam:
+      name: account-id
+      in: header
+      description: Account id to be passed as a header
+      required: true
+      schema:
+        type: string
+  
+  requestBodies:
+    Create_DCIM:
+      content:
+        application/json:
+          schema:
+            required:
+            - subset
+            - ddids
+            - profile
+            type: object
+            properties:
+              subset:
+                type: integer
+              ddids:
+                type: string
+              profile:
+                type: string                
+            example:
+              subset: 0
+              ddids: "1744365,1744376"
+              profile: TST10DemoID
+      required: true
+
+  securitySchemes:
+    Authorization:
+      type: http
+      description: Get the access token by calling the AccessToken API first. Then
+        provide the access token below as the Authorization header and click Authorize.
+      scheme: bearer
+      bearerFormat: Bearer

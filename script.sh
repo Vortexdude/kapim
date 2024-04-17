@@ -1,19 +1,53 @@
+#!/bin/bash
 
 
-FIRST_COMMIT_HASH='c940dd84621df36524518f6ebea4d8646f7bc160'
 RESOURCE_GROUP='dlr-dev-apim'
 APIM_INSTANCE='dlr-dev-apim'
-BUILD_SOURCESDIRECTORY=$(pwd)
-sourceFolder="$BUILD_SOURCESDIRECTORY/APIs"
+
+# install the nessesary tools
+sudo apt install jq yq -y
+
+cd APIs
 
 
-current_hash=$(git log --oneline -1 --pretty=format:%H)
-gitchanges=$(git diff --name-status "$FIRST_COMMIT_HASH" "$current_hash")
+echo "Filtering  the Name from the file"
+
+find -type f -exec sh -c '
+    original_name="$1"
+    new_name=$(echo "$1" | sed "s/[[:space:]\(\)\$]//g")
+    if [ "$original_name" != "$new_name" ]; then
+        mv "$original_name" "$new_name"
+    fi
+' sh {} \;
 
 
-echo "Git Changes - - "
+# Function to convert YAML to JSON
+convert_yaml_to_json() {
+    yaml_file="$1"
+    json_file="${yaml_file%.yaml}.json"
 
-echo "$gitchanges"
+    # remove the octal value if any
+    sed -i 's/\b0\([0-9]\+\)/\1/g' "$yaml_file"
+    
+    cat "$yaml_file" | yq . > "$json_file"
+}
+
+# Iterate over all files in the directory
+for file in *; do
+    if [ -f "$file" ]; then
+        if [[ "$file" == *.yaml ]]; then
+            convert_yaml_to_json "$file"
+            if [[ $? -eq 0 ]]; then
+            	rm -rf "$file"
+            fi
+
+        elif [[ "$file" != *.json ]]; then
+            echo "$file"
+        fi
+    fi
+done
+
+
 
 createApi (){
 	apiFilePath=$1
@@ -34,36 +68,9 @@ createApi (){
 		--path "${basePath}" 
 }
 
-
-
-while IFS= read -r line; do
-
-	modificationType=$(echo $line | awk '{print $1}')
-	apiFilePath=$(echo $line | awk '{print $2}')
-
-
-	if [ "${apiFilePath%%/*}" != "APIs" ]; then
-        echo "Ignoring file: $apiFilePath"
-        continue
-    	fi
-
-	fileType=${apiFilePath##*.}
-	filepath="$sourceFolder/${apiFilePath//APIs\//}"
-	
-	echo "Handling API: $filePath"
-	
-	if [ "$modificationType" == "A" ]; then
-		if [ "$fileType" == "json" ]; then
-		   echo "Importing Json format API: $filePath"
-		   
-		   createApi $filepath
-		
-		else
-		   echo "Unsupported file type: $fileType..."
-		fi
-	fi
-    
-
-done < <(echo "$gitchanges")
-
-echo "New Hash - $current_hash"
+for file in *; do 
+    if [ -f "$file" ]; then 
+        echo "Importing Json format API: $filePath"
+        createApi "$file"
+    fi 
+done

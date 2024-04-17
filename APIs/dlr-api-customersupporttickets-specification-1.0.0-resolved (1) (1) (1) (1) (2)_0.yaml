@@ -1,0 +1,1172 @@
+---
+openapi: 3.0.0
+info:
+  title: CustomerSupportTickets-v1
+  description: Submit tickets for Account Management, Accounts Receivable, Amenities,
+    and Facilities Request.
+  version: 1.0.1
+servers:
+- url: https://playground.digitalrealty.com/v1
+- url: https://sandbox.digitalrealty.com/v1
+- url: https://api.digitalrealty.com/v1
+security:
+- Authorization: []
+tags:
+- name: Customer Support Tickets
+paths:
+  "/customer-support-tickets":
+    get:
+      tags:
+      - Customer Support Tickets
+      description: The method can be used to retrieve all customer support tickets
+        of the customers account.
+      operationId: customer-support-list
+      parameters:
+      - name: master-account-id
+        in: header
+        description: Master account id to be passed as a header
+        required: true
+        schema:
+          type: string
+      - name: account-id
+        in: header
+        description: Account id to be passed as a header
+        required: true
+        schema:
+          type: string
+      - name: site
+        in: query
+        description: Specify the sitecode to filter by
+        schema:
+          type: string
+      - name: status
+        in: query
+        description: Specify the status to filter by
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+          enum:
+          - New
+          - In Progress
+          - Completed
+          - Cancelled
+      - name: requestType
+        in: query
+        description: Specify the requestType to filter by
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+          enum:
+          - Account Management
+          - Accounts Receivable
+          - Facilities Request
+          - Amenities
+      - name: category
+        in: query
+        description: Specify the category to filter by
+        schema:
+          type: string
+      - name: createdBy
+        in: query
+        description: Specify the email to filter by
+        schema:
+          type: string
+      - name: size
+        in: query
+        description: The number of items to return
+        schema:
+          maximum: 1000
+          minimum: 1
+          type: integer
+          format: int32
+          default: 25
+      - name: page
+        in: query
+        description: The page number to return
+        schema:
+          minimum: 0
+          type: integer
+          format: int32
+          default: 0
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/CustomerSupport"
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: client
+                  message: The request could not be understood by the server due to
+                    malformed syntax.
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: client
+                  message: Unauthorized. Access token is missing or invalid.
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: client
+                  message: The server understood the request, but will not fulfill
+                    it.
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: client
+                  message: Resource not found.
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: server
+                  message: Oops. Something went wrong. The server encountered an internal
+                    error or misconfiguration and was unable to complete your request.
+    post:
+      tags:
+      - Customer Support Tickets
+      description: The method can be used to post a customer support request ticket.
+      operationId: customer-support-create
+      parameters:
+      - name: master-account-id
+        in: header
+        description: Master account id to be passed as a header
+        required: true
+        schema:
+          type: string
+      - name: account-id
+        in: header
+        description: Account id to be passed as a header
+        required: true
+        schema:
+          type: string
+      requestBody:
+        "$ref": "#/components/requestBodies/CustomerSupportPost"
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/CustomerSupportDetailsPost"
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: client
+                  message: The request could not be understood by the server due to
+                    malformed syntax.
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: client
+                  message: Unauthorized. Access token is missing or invalid.
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: client
+                  message: The server understood the request, but will not fulfill
+                    it.
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: client
+                  message: Resource not found.
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: server
+                  message: Oops. Something went wrong. The server encountered an internal
+                    error or misconfiguration and was unable to complete your request.
+  "/customer-support-tickets/{id}":
+    get:
+      tags:
+      - Customer Support Tickets
+      description: The method can be used to retrieve details of a customer support
+        ticket
+      operationId: customer-support-read
+      parameters:
+      - name: master-account-id
+        in: header
+        description: Master account id to be passed as a header
+        required: true
+        schema:
+          type: string
+      - name: account-id
+        in: header
+        description: Account id to be passed as a header
+        required: true
+        schema:
+          type: string
+      - name: id
+        in: path
+        description: Specify the identification number
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/CustomerSupportDetails"
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: client
+                  message: The request could not be understood by the server due to
+                    malformed syntax.
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: client
+                  message: Unauthorized. Access token is missing or invalid.
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: client
+                  message: The server understood the request, but will not fulfill
+                    it.
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: client
+                  message: Resource not found.
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: server
+                  message: Oops. Something went wrong. The server encountered an internal
+                    error or misconfiguration and was unable to complete your request.
+    put:
+      tags:
+      - Customer Support Tickets
+      description: The method can be used to update a customer support ticket.
+      operationId: customer-support-update
+      parameters:
+      - name: master-account-id
+        in: header
+        description: Master account id to be passed as a header
+        required: true
+        schema:
+          type: string
+      - name: account-id
+        in: header
+        description: Account id to be passed as a header
+        required: true
+        schema:
+          type: string
+      - name: id
+        in: path
+        description: Specify the identification number
+        required: true
+        schema:
+          type: string
+      requestBody:
+        "$ref": "#/components/requestBodies/CustomerSupportPut"
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/CustomerSupportDetails"
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: client
+                  message: The request could not be understood by the server due to
+                    malformed syntax.
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: client
+                  message: Unauthorized. Access token is missing or invalid.
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: client
+                  message: The server understood the request, but will not fulfill
+                    it.
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: client
+                  message: Resource not found.
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: server
+                  message: Oops. Something went wrong. The server encountered an internal
+                    error or misconfiguration and was unable to complete your request.
+  "/customer-support-tickets/{id}/cancel":
+    put:
+      tags:
+      - Customer Support Tickets
+      description: The method can be used to cancel a customer support ticket.
+      operationId: customer-support-cancel
+      parameters:
+      - name: master-account-id
+        in: header
+        description: Master account id to be passed as a header
+        required: true
+        schema:
+          type: string
+      - name: account-id
+        in: header
+        description: Account id to be passed as a header
+        required: true
+        schema:
+          type: string
+      - name: id
+        in: path
+        description: Specify the identification number
+        required: true
+        schema:
+          type: string
+      requestBody:
+        "$ref": "#/components/requestBodies/CustomerSupportCancel"
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_200"
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: client
+                  message: The request could not be understood by the server due to
+                    malformed syntax.
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: client
+                  message: Unauthorized. Access token is missing or invalid.
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: client
+                  message: The server understood the request, but will not fulfill
+                    it.
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: client
+                  message: Resource not found.
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: server
+                  message: Oops. Something went wrong. The server encountered an internal
+                    error or misconfiguration and was unable to complete your request.
+  "/customer-support-tickets/categories":
+    get:
+      tags:
+      - Customer Support Tickets
+      description: The method can be used to retrieve the available customer support
+        categories supported by DLR.
+      operationId: customer-support-categories
+      parameters:
+      - name: master-account-id
+        in: header
+        description: Master account id to be passed as a header
+        required: true
+        schema:
+          type: string
+      - name: account-id
+        in: header
+        description: Account id to be passed as a header
+        required: true
+        schema:
+          type: string
+      - name: requestType
+        in: query
+        description: Specify the requestType to filter by
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+          enum:
+          - Account Management
+          - Accounts Receivable
+          - Facilities Request
+          - Amenities
+          - Cross Connect
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/CustomerSupportCategories"
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: client
+                  message: The request could not be understood by the server due to
+                    malformed syntax.
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: client
+                  message: Unauthorized. Access token is missing or invalid.
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: client
+                  message: The server understood the request, but will not fulfill
+                    it.
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: client
+                  message: Resource not found.
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: server
+                  message: Oops. Something went wrong. The server encountered an internal
+                    error or misconfiguration and was unable to complete your request.
+components:
+  schemas:
+    CustomerSupport:
+      title: Customer Support
+      type: object
+      properties:
+        content:
+          type: array
+          items:
+            "$ref": "#/components/schemas/CustomerSupport_content"
+        pageable:
+          "$ref": "#/components/schemas/CustomerSupport_pageable"
+
+    CustomerSupportDetailsPost:
+      title: Customer Support Details
+      type: object
+      properties:
+        id:
+          type: string
+          example: "WO9335123"
+        title:
+          type: string
+          example: "Maintenance request Starbucks Cage F150-B"
+        status:
+          type: string
+          enum:
+          - New
+          - In Progress
+          - Completed
+          - Cancelled
+          example: "New"
+        site:
+          type: string
+          example: "IAD024"
+        location:
+          type: string
+          example: "Starbucks Cage F150-B"
+        requestType:
+          type: string
+          enum:
+          - Account Management
+          - Accounts Receivable
+          - Facilities Request
+          - Amenities
+          - Cross Connect
+          example: "Facilities Request"
+        category:
+          type: string
+          example: "Planned Maintenance"
+        description:
+          type: string
+          example: "Maintenance planned for week 28"
+        customerReference:
+          type: string
+          example: "REF01234"
+        createdOn:
+          type: string
+          format: date-time
+          example: "2023-08-11 08:52:09"
+        updatedOn:
+          type: string
+          format: date-time
+          example: "2023-08-11 08:52:09"          
+        closedOn:
+          type: string
+          format: date-time
+          example: "2023-08-11 08:52:09"          
+        createdBy:
+          type: string
+          example: "fsl_test Testing"
+        ticketType:
+          type: string
+          example: "Customer Support"
+        notificationRecipients:
+          type: string
+          example: "jane_doe@email.com, jake_doe@email.com"
+
+
+
+    CustomerSupportDetails:
+      title: Customer Support Details
+      type: object
+      properties:
+        id:
+          type: string
+          example: "WO9335123"
+        title:
+          type: string
+          example: "Maintenance request Starbucks Cage F150-B"
+        status:
+          type: string
+          enum:
+          - New
+          - In Progress
+          - Completed
+          - Cancelled
+          example: "New"
+        site:
+          type: string
+          example: "IAD024"
+        location:
+          type: string
+          example: "Starbucks Cage F150-B"
+        requestType:
+          type: string
+          enum:
+          - Account Management
+          - Accounts Receivable
+          - Facilities Request
+          - Amenities
+          - Cross Connect
+          example: "Facilities Request"
+        category:
+          type: string
+          example: "Planned Maintenance"
+        description:
+          type: string
+          example: "Maintenance planned for week 28"
+        customerReference:
+          type: string
+          example: "REF01234"
+        createdOn:
+          type: string
+          format: date-time
+          example: "2023-08-11 08:52:09"
+        updatedOn:
+          type: string
+          format: date-time
+          example: "2023-08-11 08:52:09"          
+        closedOn:
+          type: string
+          format: date-time
+          example: "2023-08-11 08:52:09"          
+        createdBy:
+          type: string
+          example: "fsl_test Testing"
+        ticketType:
+          type: string
+          example: "Customer Support"
+        notificationRecipients:
+          type: string
+          example: "jane_doe@email.com, jake_doe@email.com"
+        comments:
+          type: array
+          items:
+            "$ref": "#/components/schemas/CustomerSupportDetails_comments"
+          example: []  
+
+
+
+    CustomerSupportCategories:
+      title: Customer Support  Categories
+      type: object
+      properties:
+        result:
+          type: array
+          items:
+            "$ref": "#/components/schemas/CustomerSupportCategories_result"
+      example:
+        result:
+        - requestType:
+            name: "Account Management"
+            categories:
+            - name: "User Account Inquiry"
+        - requestType:
+            name: "Accounts Receivable"
+            categories:
+            - name: "General Billing Inquiry"
+        - requestType:
+            name: "Facilities Request"
+            categories:
+            - name: "Cooling - Datacenter"
+            - name: "Cooling - Office"
+            - name: "Electrical"
+            - name: "Fire/Safety"
+            - name: "Planned Maintenance"
+            
+        - requestType:
+            name: "Amenities"
+            categories:
+            - name: "Elevator"          
+            - name: "Loading Dock"       
+            - name: "Parking"         
+            - name: "General Inquiry"    
+        - requestType:
+            name:  "Cross Connect"
+            categories:
+            - name: "New Install"          
+            - name: "Change (Hot Cut)"       
+            - name: "Disconnect"         
+
+
+    inline_response_400:
+      type: object
+      properties:
+        error:
+          "$ref": "#/components/schemas/inline_response_400_error"
+    inline_response_200:
+      type: object
+      properties:
+        message:
+          type: string
+          example: "ServiceTicket 'WO9334196' has been Cancelled"
+
+    CustomerSupport_content:
+      properties:
+        id:
+          type: string
+          example: "WO9334196"
+        title:
+          type: string
+          example: "title sample1"
+        status:
+          type: string
+          enum:
+          - New
+          - In Progress
+          - Completed
+          - Cancelled
+          example: "New"
+        site:
+          type: string
+          example: "PHX015"
+        location:
+          type: string
+          example: "COLO 8 Starbucks Cage 8.04"
+        requestType:
+          type: string
+          enum:
+          - Account Management
+          - Accounts Receivable
+          - Facilities Request
+          - Amenities
+          - Cross Connect
+          example: "Facilities Request"
+        category:
+          type: string
+          example: "Fire/Safety"
+        createdOn:
+          type: string
+          format: date-time
+          example: "2023-08-08 17:24:37"
+        closedOn:
+          type: string
+          format: date-time
+          example: "2023-08-08 17:24:37"
+        updatedOn:
+          type: string
+          format: date-time
+          example: "2023-08-08 17:24:37"
+        createdBy:
+          type: string
+          example: "Michael test"
+    CustomerSupport_pageable:
+      properties:
+        last:
+          type: boolean
+          example: false
+        totalPages:
+          type: integer
+          format: int32
+          example: 343
+        totalElements:
+          type: integer
+          format: int64
+          example: 8567
+        size:
+          type: integer
+          format: int32
+          example: 25
+        number:
+          type: integer
+          format: int32
+          example: 0
+        numberOfElements:
+          type: integer
+          format: int32
+          example: 25
+        first:
+          type: boolean
+          example: true
+        empty:
+          type: boolean
+          example: false
+    CustomerSupportDetails_comments:
+      properties:
+        comment:
+          type: string
+          example: ""
+        commentedBy:
+          type: string
+          example: ""
+        commentedOn:
+          type: string
+          format: date-time
+          example: ""
+    CustomerSupportCategories_requestType_categories:
+      properties:
+        name:
+          type: string
+    CustomerSupportCategories_requestType:
+      type: object
+      properties:
+        name:
+          type: string
+        categories:
+          type: array
+          items:
+            "$ref": "#/components/schemas/CustomerSupportCategories_requestType_categories"
+    CustomerSupportCategories_result:
+      properties:
+        requestType:
+          "$ref": "#/components/schemas/CustomerSupportCategories_requestType"
+    inline_response_400_error:
+      type: object
+      properties:
+        correlationId:
+          type: string
+        type:
+          type: string
+          enum:
+          - client
+          - server
+        message:
+          type: string
+        details:
+          type: string
+  responses:
+    '400':
+      description: Bad Request
+      content:
+        application/json:
+          schema:
+            "$ref": "#/components/schemas/inline_response_400"
+          example:
+            error:
+              correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+              type: client
+              message: The request could not be understood by the server due to malformed
+                syntax.
+    '401':
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            "$ref": "#/components/schemas/inline_response_400"
+          example:
+            error:
+              correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+              type: client
+              message: Unauthorized. Access token is missing or invalid.
+    '403':
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            "$ref": "#/components/schemas/inline_response_400"
+          example:
+            error:
+              correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+              type: client
+              message: The server understood the request, but will not fulfill it.
+    '404':
+      description: Not Found
+      content:
+        application/json:
+          schema:
+            "$ref": "#/components/schemas/inline_response_400"
+          example:
+            error:
+              correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+              type: client
+              message: Resource not found.
+    '500':
+      description: Internal Server Error
+      content:
+        application/json:
+          schema:
+            "$ref": "#/components/schemas/inline_response_400"
+          example:
+            error:
+              correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+              type: server
+              message: Oops. Something went wrong. The server encountered an internal
+                error or misconfiguration and was unable to complete your request.
+  parameters:
+    requestTypeParam:
+      name: requestType
+      in: query
+      description: Specify the requestType to filter by
+      required: false
+      style: form
+      explode: true
+      schema:
+        type: string
+        enum:
+        - Account Management
+        - Accounts Receivable
+        - Facilities Request
+        - Amenities
+        - Cross Connect
+    statusParam:
+      name: status
+      in: query
+      description: Specify the status to filter by
+      required: false
+      style: form
+      explode: true
+      schema:
+        type: string
+        enum:
+        - New
+        - In Progress
+        - Completed
+        - Cancelled
+    masterAccountIdParam:
+      name: master-account-id
+      in: header
+      description: Master account id to be passed as a header
+      required: true
+      schema:
+        type: string
+    accountIdParam:
+      name: account-id
+      in: header
+      description: Account id to be passed as a header
+      required: true
+      schema:
+        type: string
+    siteParam:
+      name: site
+      in: query
+      description: Specify the sitecode to filter by
+      schema:
+        type: string
+    categoryParam:
+      name: category
+      in: query
+      description: Specify the category to filter by
+      schema:
+        type: string
+    createdbyParam:
+      name: createdBy
+      in: query
+      description: Specify the email to filter by
+      schema:
+        type: string
+    sizeParam:
+      name: size
+      in: query
+      description: The number of items to return
+      schema:
+        maximum: 1000
+        minimum: 1
+        type: integer
+        format: int32
+        default: 25
+    pageParam:
+      name: page
+      in: query
+      description: The page number to return
+      schema:
+        minimum: 0
+        type: integer
+        format: int32
+        default: 0
+    idParam:
+      name: id
+      in: path
+      description: Specify the identification number
+      required: true
+      schema:
+        type: string
+  requestBodies:
+    CustomerSupportPost:
+      content:
+        application/json:
+          schema:
+            required:
+            - category
+            - description
+            - requestType
+            - site
+            - title
+            type: object
+            properties:
+              title:
+                type: string
+                example: "Maintenance request"
+              site:
+                type: string
+                example: "IAD024"
+              location:
+                type: string
+                example: "Starbucks Cage F150-B"
+              requestType:
+                type: string
+                enum:
+                - Account Management
+                - Accounts Receivable
+                - Facilities Request
+                - Amenities
+                - Cross Connect
+                example: "Facilities Request"
+              category:
+                type: string
+                example: "Planned Maintenance"
+              description:
+                type: string
+                example: "Maintenance planned for week 28"
+              customerReference:
+                type: string
+                example: "REF01234"
+              notificationRecipients:
+                type: string
+                example: "jane_doe@email.com,jake_doe@email.com"
+
+      required: true
+    CustomerSupportPut:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              customerReference:
+                type: string
+                example: "REF05678"
+              notificationRecipients:
+                type: string
+                example: "jane_doe@email.com, jake_doe@email.com"
+
+      required: true
+    CustomerSupportCancel:
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              cancelReason:
+                type: string
+                default: Request no longer needed
+                enum:
+                - Duplicate request
+                - Request entered in error
+                - Request no longer needed
+                example: "Request no longer needed"
+
+      required: true
+  securitySchemes:
+    Authorization:
+      type: http
+      description: Get the access token by calling the AccessToken API first. Then
+        provide the access token below as the Authorization header and click Authorize.
+      scheme: bearer
+      bearerFormat: Bearer

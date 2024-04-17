@@ -1,0 +1,376 @@
+---
+openapi: 3.0.0
+info:
+  title: Sites-v1
+  description: The Sites API can be used to retrieve the site, street address, city,
+    metro and country.
+  version: 1.0.5
+servers:
+- url: https://playground.digitalrealty.com/v1
+- url: https://sandbox.digitalrealty.com/v1
+- url: https://api.digitalrealty.com/v1
+security:
+- Authorization: []
+paths:
+  "/sites":
+    get:
+      tags:
+      - Sites
+      description: The method can be used to retrieve information that identifies
+        the site code to the physical location of the site.
+      operationId: sites
+      parameters:
+      - name: Master-Account-Id
+        in: header
+        description: Master account id to be passed as a header
+        required: true
+        schema:
+          type: string          
+      - name: Account-Id
+        in: header
+        description: Account id to be passed as a header
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Sites"
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: client
+                  message: The request could not be understood by the server due to
+                    malformed syntax.
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: client
+                  message: Unauthorized. Access token is missing or invalid.
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: client
+                  message: The server understood the request, but will not fulfill
+                    it.
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: client
+                  message: Resource not found.
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: server
+                  message: Oops. Something went wrong. The server encountered an internal
+                    error or misconfiguration and was unable to complete your request.  
+  "/global-sites":
+    get:
+      tags:
+      - Sites
+      description: The method can be used to retrieve information that identifies
+        the site code to the physical location of the site.
+      operationId: global-sites
+      parameters:
+      - name: Master-Account-Id
+        in: header
+        description: Master account id to be passed as a header
+        required: true
+        schema:
+          type: string
+      - name: site
+        in: query
+        description: site can be passed as a query parameter as a filter
+        required: false
+        schema:
+          type: string
+      - name: city
+        in: query
+        description: city can be passed as a query parameter as a filter
+        required: false
+        schema:
+          type: string
+      - name: country
+        in: query
+        description: country can be passed as a query parameter as a filter
+        required: false
+        schema:
+          type: string
+      - name: metro
+        in: query
+        description: metro can be passed as a query parameter as a filter
+        required: false
+        schema:
+          type: string
+      - name: address
+        in: query
+        description: address can be passed as a query parameter as a filter
+        required: false
+        schema:
+          type: string          
+          
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/GlobalSites"
+        '400':
+          description: Bad Request
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: client
+                  message: The request could not be understood by the server due to
+                    malformed syntax.
+        '401':
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: client
+                  message: Unauthorized. Access token is missing or invalid.
+        '403':
+          description: Forbidden
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: client
+                  message: The server understood the request, but will not fulfill
+                    it.
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: client
+                  message: Resource not found.
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/inline_response_400"
+              example:
+                error:
+                  correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+                  type: server
+                  message: Oops. Something went wrong. The server encountered an internal
+                    error or misconfiguration and was unable to complete your request.  
+
+
+
+components:
+  schemas:
+    Sites:
+      title: Sites
+      type: object
+      properties:
+        site:
+          type: string
+        address:
+          type: string
+        city:
+          type: string
+        metro:
+          type: string
+        country:
+          type: string
+      example:
+      - site: DFW010
+        address: 1234 Street
+        city: Dallas
+        metro: Dallas
+        country: United States
+
+    GlobalSites:
+      title: GlobalSites
+      type: object
+      properties:
+        site:
+          type: string
+        address:
+          type: string
+        city:
+          type: string
+        metro:
+          type: string
+        country:
+          type: string
+        masterAccountId:
+          type: string
+        masterAccountName:
+          type: string
+        accountId:
+          type: string
+        accountName:
+          type: string
+          
+      example:
+      - site: DFW010
+        address: 1234 Street
+        city: Dallas
+        metro: Dallas
+        country: United States
+        masterAccountId: 0012E00002S4aOtuAJ
+        masterAccountName: Digital Realty Trust, Inc.
+        accountId: 0012E00002dn2YFQAY
+        accountName: ABC - Charlotte, LLC
+        
+        
+    inline_response_400_error:
+      type: object
+      properties:
+        correlationId:
+          type: string
+        type:
+          type: string
+          enum:
+          - client
+          - server
+        message:
+          type: string
+        details:
+          type: string
+    
+    inline_response_400:
+      type: object
+      properties:
+        error:
+          "$ref": "#/components/schemas/inline_response_400_error"         
+        
+        
+  parameters:
+    masterAccountIdParam:
+      name: Master-Account-Id
+      in: header
+      description: Master account id to be passed as a header
+      required: true
+      schema:
+        type: string
+    accountIdParam:
+      name: Account-Id
+      in: header
+      description: Account id to be passed as a header
+      required: true
+      schema:
+        type: string
+  securitySchemes:
+    Authorization:
+      type: http
+      description: Get the access token by calling the AccessToken API first. Then
+        provide the access token below as the Authorization header and click Authorize.
+      scheme: bearer
+      bearerFormat: Bearer
+   
+  
+
+
+  responses:
+    '400':
+      description: Bad Request
+      content:
+        application/json:
+          schema:
+            "$ref": "#/components/schemas/inline_response_400"
+          example:
+            error:
+              correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+              type: client
+              message: The request could not be understood by the server due to malformed
+                syntax.
+    '401':
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            "$ref": "#/components/schemas/inline_response_400"
+          example:
+            error:
+              correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+              type: client
+              message: Unauthorized. Access token is missing or invalid.
+    '403':
+      description: Forbidden
+      content:
+        application/json:
+          schema:
+            "$ref": "#/components/schemas/inline_response_400"
+          example:
+            error:
+              correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+              type: client
+              message: The server understood the request, but will not fulfill it.
+    '404':
+      description: Not Found
+      content:
+        application/json:
+          schema:
+            "$ref": "#/components/schemas/inline_response_400"
+          example:
+            error:
+              correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+              type: client
+              message: Resource not found.
+    '500':
+      description: Internal Server Error
+      content:
+        application/json:
+          schema:
+            "$ref": "#/components/schemas/inline_response_400"
+          example:
+            error:
+              correlationId: 96b29015-622e-433a-8437-681c6b24d9f1
+              type: server
+              message: Oops. Something went wrong. The server encountered an internal
+                error or misconfiguration and was unable to complete your request.

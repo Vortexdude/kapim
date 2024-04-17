@@ -1,0 +1,140 @@
+---
+openapi: 3.0.0
+info:
+  title: Comments-v1
+  description: The API should be used to either add comments to remote hands, shipments,
+    customer service  and facility access requests or read any comments.
+  version: 1.0.6
+servers:
+- url: https://playground.digitalrealty.com/v1
+- url: https://sandbox.digitalrealty.com/v1
+- url: https://api.digitalrealty.com/v1
+security:
+- Authorization: []
+paths:
+  "/comments":
+    post:
+      tags:
+      - Comments
+      description: The method can be used to add a comment to an existing work order.
+      operationId: comments-create
+      parameters:
+      - name: Master-Account-Id
+        in: header
+        description: Master account id to be passed as a header
+        required: true
+        schema:
+          type: string
+      - name: Account-Id
+        in: header
+        description: Account id to be passed as a header
+        required: true
+        schema:
+          type: string
+      requestBody:
+        "$ref": "#/components/requestBodies/Comment"
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Comments"
+  "/comments/{requestId}":
+    get:
+      tags:
+      - Comments
+      description: The method can be used to retrieve all comments that are made to
+        a specific work order.
+      operationId: comments-list
+      parameters:
+      - name: Master-Account-Id
+        in: header
+        description: Master account id to be passed as a header
+        required: true
+        schema:
+          type: string
+      - name: Account-Id
+        in: header
+        description: Account id to be passed as a header
+        required: true
+        schema:
+          type: string
+      - name: requestId
+        in: path
+        description: Specify the identification number
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  "$ref": "#/components/schemas/Comments"
+components:
+  schemas:
+    Comments:
+      type: object
+      properties:
+        comment:
+          type: string
+        commentedBy:
+          type: string
+        commentedOn:
+          type: string
+          format: date-time
+      example:
+        comment: Example comment
+        commentedBy: John Doe
+        commentedOn: '2023-09-26 12:13:43'
+  parameters:
+    masterAccountIdParam:
+      name: Master-Account-Id
+      in: header
+      description: Master account id to be passed as a header
+      required: true
+      schema:
+        type: string
+    accountIdParam:
+      name: Account-Id
+      in: header
+      description: Account id to be passed as a header
+      required: true
+      schema:
+        type: string
+    idParam:
+      name: id
+      in: path
+      description: Specify the identification number
+      required: true
+      schema:
+        type: string
+  requestBodies:
+    Comment:
+      content:
+        application/json:
+          schema:
+            required:
+            - comment
+            - requestId
+            type: object
+            properties:
+              requestId:
+                type: string
+              comment:
+                type: string
+            example:
+              requestId: WO9271561
+              comment: Example comment
+      required: true
+  securitySchemes:
+    Authorization:
+      type: http
+      description: Get the access token by calling the AccessToken API first. Then
+        provide the access token below as the Authorization header and click Authorize.
+      scheme: bearer
+      bearerFormat: Bearer
